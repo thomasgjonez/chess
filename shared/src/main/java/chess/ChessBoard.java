@@ -11,11 +11,12 @@ public class ChessBoard {
 
     public ChessBoard() {
         board = new ChessPiece[8][8];
+
     }
 
     /**
      * Adds a chess piece to the chessboard
-     *
+     *test
      * @param position where to add the piece to
      * @param piece    the piece to add
      */
