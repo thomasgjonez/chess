@@ -9,11 +9,11 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    private String color;
+    private ChessGame.TeamColor color;
     private PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        this.color = pieceColor.toString();
+        this.color = pieceColor;
         this.type = type;
     }
 
@@ -33,7 +33,7 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        return ChessGame.TeamColor.valueOf(this.color);
+        return this.color;
     }
 
     /**
@@ -51,7 +51,27 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        //return all availbe moves for a certain piece
+        switch (getPieceType()) {
+            case KING:
+                return PieceMovesCalculator.KingMoves(board, myPosition, color);
+            case QUEEN:
+                return PieceMovesCalculator.QueenMoves(board, myPosition, color);
+            case BISHOP:
+                return PieceMovesCalculator.BishopMoves(board, myPosition, color);
+            case KNIGHT:
+                return PieceMovesCalculator.KnightMoves(board, myPosition, color);
+            case ROOK:
+                return PieceMovesCalculator.RookMoves(board, myPosition, color);
+            case PAWN:
+                return PieceMovesCalculator.PawnMoves(board, myPosition, color);
+            default:
+                break;
+        }
+
         throw new RuntimeException("Not implemented");
+    }
+    @Override
+    public String toString() {
+        return this.type.toString();
     }
 }
