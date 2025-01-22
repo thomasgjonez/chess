@@ -52,24 +52,16 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        switch (getPieceType()) {
-            case KING:
-                return PieceMovesCalculator.KingMoves(board, myPosition, color);
-            case QUEEN:
-                return PieceMovesCalculator.QueenMoves(board, myPosition, color);
-            case BISHOP:
-                return PieceMovesCalculator.BishopMoves(board, myPosition, color);
-            case KNIGHT:
-                return PieceMovesCalculator.KnightMoves(board, myPosition, color);
-            case ROOK:
-                return PieceMovesCalculator.RookMoves(board, myPosition, color);
-            case PAWN:
-                return PieceMovesCalculator.PawnMoves(board, myPosition, color);
-            default:
-                break;
-        }
+        PieceMovesCalculator moves = switch(getPieceType()){
+            case KING -> new KingMoveCalculator();
+            case QUEEN -> new QueenMoveCalculator();
+            case BISHOP -> new BishopMoveCalculator();
+            case KNIGHT -> new KnightMoveCalculator();
+            case ROOK -> new RookMoveCalculator();
+            case PAWN -> new PawnMoveCalculator();
 
-        throw new RuntimeException("Not implemented");
+        };
+        return moves.pieceMoves(board, myPosition);
     }
     @Override
     public String toString() {
