@@ -1,6 +1,8 @@
 package chess;
 
 import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -9,11 +11,13 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-    private TeamColor teamColor;
+    private TeamColor teamColor; //whose turn it is, maybe rename the variable?
     private ChessBoard chessBoard;
 
     public ChessGame() {
-
+        this.chessBoard = new ChessBoard();
+        this.teamColor = TeamColor.WHITE;
+        this.chessBoard.resetBoard();
     }
 
     /**
@@ -48,11 +52,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (startPosition == null) {
-            return null;
-        } else {
-
-        }
+        // this will check all valid moves through the calculator and makes sure it doesn't put the King in Check.
     }
 
     /**
@@ -62,7 +62,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+
     }
 
     /**
@@ -72,7 +72,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        // just check if opponents kingsmovecalculator returns an empty arrayList
+        // just check if your next move calculator contians position of Opponents King
         throw new RuntimeException("Not implemented");
     }
 
