@@ -12,7 +12,7 @@ public class KnightMoveCalculator implements PieceMovesCalculator {
         addMovesInDirection(moves, board, position,-1,2 );//RightUp
         addMovesInDirection(moves, board, position,1,2 ); //RightDown
         addMovesInDirection(moves, board, position,-1,-2 );//LeftUp
-        addMovesInDirection(moves, board, position,-1,-2 );//LeftDown
+        addMovesInDirection(moves, board, position,1,-2 );//LeftDown
         addMovesInDirection(moves, board, position,2,1 );//DownRight
         addMovesInDirection(moves, board, position,2,-1 );//DownLeft
         return moves;
@@ -40,5 +40,20 @@ public class KnightMoveCalculator implements PieceMovesCalculator {
         int row = position.getRow();
         int col = position.getColumn();
         return row >= 1 && row <= 8 && col >= 1 && col <= 8;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

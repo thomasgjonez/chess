@@ -73,9 +73,16 @@ public class ChessGame {
         //basically simulate the move and if it results in check, don't do it!
         //could do a copy method to not override stuff accidentally, but that might be more work
         boolean isSafe = true;
+        ChessPiece ogPiece = chessBoard.getPiece(move.getStartPosition());
         ChessPiece tempPiece = chessBoard.getPiece(move.getEndPosition());
 
         chessBoard.addPiece(move.getEndPosition(), tempPiece); // simulate the move and get rid of duplicate
+        // Handle temporary promotion if the move is a pawn reaching the end of the board
+        if (ogPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
+                (move.getEndPosition().getRow() == 8 || move.getEndPosition().getRow() == 1)) {
+            chessBoard.addPiece(move.getEndPosition(), new ChessPiece(ogPiece.getTeamColor(), ChessPiece.PieceType.QUEEN));
+        }
+
         chessBoard.addPiece(move.getStartPosition(), null);
 
         if (isInCheck(tempPiece.getTeamColor())){
@@ -103,19 +110,16 @@ public class ChessGame {
             throw new InvalidMoveException("Invalid move: No piece in that start position or its not your turn.");
         }
 
-
         Collection<ChessMove> validMoves = validMoves(start);
         if (!validMoves.contains(move)) {
             throw new InvalidMoveException("Invalid move: The move is not allowed.");
         }
-
         // Perform the move on the board
         chessBoard.addPiece(end, piece);
         chessBoard.addPiece(start, null);
 
         // Check for promotion assuming it will be Queen
         if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-
             if ((piece.getTeamColor() == TeamColor.WHITE && end.getRow() == 8) ||
                     (piece.getTeamColor() == TeamColor.BLACK && end.getRow() == 1)) {
 

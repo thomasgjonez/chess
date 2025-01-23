@@ -38,4 +38,19 @@ public class RookMoveCalculator implements PieceMovesCalculator{
     private boolean isWithinBounds(int row, int col) {
         return row >= 1 && row <= 8 && col >= 1 && col <= 8;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
