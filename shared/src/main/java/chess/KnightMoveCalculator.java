@@ -14,7 +14,7 @@ public class KnightMoveCalculator implements PieceMovesCalculator {
         addMovesInDirection(moves, board, position,-1,-2 );//LeftUp
         addMovesInDirection(moves, board, position,-1,-2 );//LeftDown
         addMovesInDirection(moves, board, position,2,1 );//DownRight
-        addMovesInDirection(moves, board, position,-,-1 );//DownLeft
+        addMovesInDirection(moves, board, position,2,-1 );//DownLeft
         return moves;
     }
 
