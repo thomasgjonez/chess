@@ -74,18 +74,18 @@ public class ChessGame {
         //could do a copy method to not override stuff accidentally, but that might be more work
         boolean isSafe = true;
         ChessPiece ogPiece = chessBoard.getPiece(move.getStartPosition());
-        ChessPiece tempPiece = chessBoard.getPiece(move.getEndPosition());
+        ChessPiece tempPiece = chessBoard.getPiece(move.getEndPosition());//can be null, or opponent piece
 
         chessBoard.addPiece(move.getEndPosition(), ogPiece); // simulate the move and get rid of duplicate
         chessBoard.addPiece(move.getStartPosition(), null);
         // Handle temporary promotion if the move is a pawn reaching the end of the board
-        if (ogPiece != null && ogPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
-                (move.getEndPosition().getRow() == 8 || move.getEndPosition().getRow() == 1)) {
-            chessBoard.addPiece(move.getEndPosition(), new ChessPiece(ogPiece.getTeamColor(), ChessPiece.PieceType.QUEEN));//need to change this to account for all promotion piece types
-        }
+        //if (ogPiece != null && ogPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
+        //        (move.getEndPosition().getRow() == 8 || move.getEndPosition().getRow() == 1)) {
+        //    chessBoard.addPiece(move.getEndPosition(), new ChessPiece(ogPiece.getTeamColor(), ChessPiece.PieceType.QUEEN));//need to change this to account for all promotion piece types
+        //}
 
 
-        if (isInCheck(tempPiece.getTeamColor())){
+        if (isInCheck(ogPiece.getTeamColor())){
             isSafe = false;
         }
 
@@ -111,7 +111,7 @@ public class ChessGame {
         }
 
         Collection<ChessMove> validMoves = validMoves(start);
-        if (!validMoves.contains(move)) {
+        if (validMoves == null || !validMoves.contains(move)) {
             throw new InvalidMoveException("Invalid move: The move is not allowed.");
         }
         // Perform the move on the board
@@ -147,7 +147,7 @@ public class ChessGame {
                 ChessPosition currentPos = new ChessPosition(i, j);
                 ChessPiece piece = chessBoard.getPiece(currentPos);
 
-                // Skip over empty squares
+                // Skip over empty squares or your team's pieces
                 if (piece == null || piece.getTeamColor() == teamColor) {
                     continue;
                 }
