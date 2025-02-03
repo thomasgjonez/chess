@@ -56,8 +56,8 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         // this will check all valid moves through the calculator and makes sure it doesn't put the King in Check.
         ChessPiece piece = chessBoard.getPiece(startPosition);
-        if (piece == null || piece.getTeamColor() != teamColor) {
-            return new ArrayList<>();
+        if (piece == null) {
+            return null;
         }
         Collection<ChessMove> possibleMoves = piece.pieceMoves(chessBoard, startPosition);
 
@@ -76,14 +76,14 @@ public class ChessGame {
         ChessPiece ogPiece = chessBoard.getPiece(move.getStartPosition());
         ChessPiece tempPiece = chessBoard.getPiece(move.getEndPosition());
 
-        chessBoard.addPiece(move.getEndPosition(), tempPiece); // simulate the move and get rid of duplicate
+        chessBoard.addPiece(move.getEndPosition(), ogPiece); // simulate the move and get rid of duplicate
+        chessBoard.addPiece(move.getStartPosition(), null);
         // Handle temporary promotion if the move is a pawn reaching the end of the board
-        if (ogPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
+        if (ogPiece != null && ogPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
                 (move.getEndPosition().getRow() == 8 || move.getEndPosition().getRow() == 1)) {
-            chessBoard.addPiece(move.getEndPosition(), new ChessPiece(ogPiece.getTeamColor(), ChessPiece.PieceType.QUEEN));
+            chessBoard.addPiece(move.getEndPosition(), new ChessPiece(ogPiece.getTeamColor(), ChessPiece.PieceType.QUEEN));//need to change this to account for all promotion piece types
         }
 
-        chessBoard.addPiece(move.getStartPosition(), null);
 
         if (isInCheck(tempPiece.getTeamColor())){
             isSafe = false;
