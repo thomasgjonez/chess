@@ -100,18 +100,18 @@ public class ChessGame {
 
         Collection<ChessMove> validMoves = validMoves(start);
         if (validMoves == null || !validMoves.contains(move)) {
-            throw new InvalidMoveException("Invalid move: The move is not allowed.");
+            throw new InvalidMoveException("Invalid move: You can't move there :/");
         }
         // Perform the move on the board
         chessBoard.addPiece(end, piece);
         chessBoard.addPiece(start, null);
 
-        // Check for promotion, need to add on all the possible moves?
+        // Check for promotion, need to add on all the possible moves? or get the required piece.
         if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
             if ((piece.getTeamColor() == TeamColor.WHITE && end.getRow() == 8) ||
                     (piece.getTeamColor() == TeamColor.BLACK && end.getRow() == 1)) {
-
-                chessBoard.addPiece(end, new ChessPiece(teamColor, ChessPiece.PieceType.QUEEN));
+                ChessPiece promotionPiece = new ChessPiece(piece.getTeamColor(),move.getPromotionPiece());
+                chessBoard.addPiece(move.getEndPosition(),promotionPiece);
             }
         }
 
@@ -119,6 +119,7 @@ public class ChessGame {
         teamColor = (teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
 
     }
+
 
 
     /**
