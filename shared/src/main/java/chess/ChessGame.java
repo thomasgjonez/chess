@@ -60,38 +60,26 @@ public class ChessGame {
             return null;
         }
         Collection<ChessMove> possibleMoves = piece.pieceMoves(chessBoard, startPosition);
-
         List<ChessMove> validMoves = new ArrayList<>();
+
         for (ChessMove move : possibleMoves) {
-            if (isSafe(move)){
+            ChessPiece tempPiece = chessBoard.getPiece(move.getEndPosition());
+            if(isSafe(move, piece, tempPiece, startPosition)){
                 validMoves.add(move);
             }
         }
         return validMoves;
     }
-    public boolean isSafe(ChessMove move) {
+    public boolean isSafe(ChessMove move, ChessPiece piece, ChessPiece tempPiece, ChessPosition startPosition) {
         //basically simulate the move and if it results in check, don't do it!
         //could do a copy method to not override stuff accidentally, but that might be more work
-        boolean isSafe = true;
-        ChessPiece ogPiece = chessBoard.getPiece(move.getStartPosition());
-        ChessPiece tempPiece = chessBoard.getPiece(move.getEndPosition());//can be null, or opponent piece
+        chessBoard.addPiece(move.getEndPosition(), piece); // simulate the move and get rid of duplicate
+        chessBoard.addPiece(startPosition, null);
 
-        chessBoard.addPiece(move.getEndPosition(), ogPiece); // simulate the move and get rid of duplicate
-        chessBoard.addPiece(move.getStartPosition(), null);
-        // Handle temporary promotion if the move is a pawn reaching the end of the board
-        //if (ogPiece != null && ogPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
-        //        (move.getEndPosition().getRow() == 8 || move.getEndPosition().getRow() == 1)) {
-        //    chessBoard.addPiece(move.getEndPosition(), new ChessPiece(ogPiece.getTeamColor(), ChessPiece.PieceType.QUEEN));//need to change this to account for all promotion piece types
-        //}
+        boolean isSafe = !isInCheck(piece.getTeamColor());
 
-
-        if (isInCheck(ogPiece.getTeamColor())){
-            isSafe = false;
-        }
-
-        chessBoard.addPiece(move.getEndPosition(), null); // return to starting state of board
-        chessBoard.addPiece(move.getStartPosition(), tempPiece);
-
+        chessBoard.addPiece(move.getEndPosition(), tempPiece); // return to starting state of board
+        chessBoard.addPiece(startPosition, piece);
         return isSafe;
     }
 
@@ -118,7 +106,7 @@ public class ChessGame {
         chessBoard.addPiece(end, piece);
         chessBoard.addPiece(start, null);
 
-        // Check for promotion assuming it will be Queen
+        // Check for promotion, need to add on all the possible moves?
         if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
             if ((piece.getTeamColor() == TeamColor.WHITE && end.getRow() == 8) ||
                     (piece.getTeamColor() == TeamColor.BLACK && end.getRow() == 1)) {
@@ -167,13 +155,15 @@ public class ChessGame {
     }
 
     public ChessPosition findKing(TeamColor teamColor) {
-        TeamColor team = teamColor;
         for (int i = 1; i <= 8; i++){
             for (int j = 1; j <= 8 ; j++) {
+                ChessPosition pos = new ChessPosition(i, j);
                 ChessPiece currentPiece = chessBoard.getPiece(new ChessPosition(i, j));
 
-                if(currentPiece.getPieceType() == ChessPiece.PieceType.KING && currentPiece.getTeamColor() == team){
-                    return new ChessPosition(i, j); // return kingPos
+                if (currentPiece != null &&
+                        currentPiece.getPieceType() == ChessPiece.PieceType.KING &&
+                        currentPiece.getTeamColor() == teamColor) {
+                    return pos; // Found the king
                 }
             }
         }
