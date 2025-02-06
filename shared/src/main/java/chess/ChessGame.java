@@ -164,7 +164,7 @@ public class ChessGame {
                 if (currentPiece != null &&
                         currentPiece.getPieceType() == ChessPiece.PieceType.KING &&
                         currentPiece.getTeamColor() == teamColor) {
-                    return pos; // Found the king
+                    return pos;
                 }
             }
         }
@@ -178,7 +178,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        return isInCheck(teamColor) && hasNoValidMove(teamColor);
+        return isInCheck(teamColor) && hasValidMove(teamColor);
     }
 
     /**
@@ -189,10 +189,10 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        return !isInCheck(teamColor) && hasNoValidMove(teamColor);
+        return !isInCheck(teamColor) && hasValidMove(teamColor);
     }
 
-    private boolean hasNoValidMove(TeamColor teamColor){
+    private boolean hasValidMove(TeamColor teamColor){
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPosition currentPos = new ChessPosition(i, j);
