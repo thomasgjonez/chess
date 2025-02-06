@@ -178,10 +178,21 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if (!isInCheck(teamColor)) {
-            return false;
-        }
+        return isInCheck(teamColor) && hasNoValidMove(teamColor);
+    }
 
+    /**
+     * Determines if the given team is in stalemate, which here is defined as having
+     * no valid moves
+     *
+     * @param teamColor which team to check for stalemate
+     * @return True if the specified team is in stalemate, otherwise false
+     */
+    public boolean isInStalemate(TeamColor teamColor) {
+        return !isInCheck(teamColor) && hasNoValidMove(teamColor);
+    }
+
+    private boolean hasNoValidMove(TeamColor teamColor){
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPosition currentPos = new ChessPosition(i, j);
@@ -195,34 +206,7 @@ public class ChessGame {
                 }
             }
         }
-
         return true;
-    }
-
-    /**
-     * Determines if the given team is in stalemate, which here is defined as having
-     * no valid moves
-     *
-     * @param teamColor which team to check for stalemate
-     * @return True if the specified team is in stalemate, otherwise false
-     */
-    public boolean isInStalemate(TeamColor teamColor) {
-        for (int i = 1; i <=8 ; i++) {
-            for (int j = 1; j <=8 ; j++) {
-                ChessPosition currentPos = new ChessPosition(i, j);
-                ChessPiece currentPiece = chessBoard.getPiece(currentPos);
-                if (currentPiece != null && currentPiece.getTeamColor() == teamColor) {
-                    Collection<ChessMove> moves = validMoves(currentPos);
-
-                    if (!moves.isEmpty()) {
-                        return false;
-                    }
-                }
-
-            }
-
-        }
-        return !isInCheck(teamColor);
     }
 
     /**
