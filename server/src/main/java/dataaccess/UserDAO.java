@@ -17,6 +17,10 @@ public class UserDAO {
         users.put(username, new UserData(username, password, email));
     }
 
+    public static UserData getUser(String username) {
+        return users.get(username);
+    }
+
     public static void clear(){
         users.clear();
     }
