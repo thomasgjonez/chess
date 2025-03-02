@@ -10,7 +10,7 @@ public class AuthDAO {
     private static final Map<String, AuthData> authTokens = new HashMap<>();
 
     public static void createAuth(String username, String authToken) {
-        authTokens.put(authToken, new AuthData(authToken, username));
+        authTokens.put(authToken, new AuthData(username, authToken));
     }
 
     public static String getUsername(String authToken) {

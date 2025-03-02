@@ -1,9 +1,9 @@
 package server;
 
 import com.google.gson.Gson;
+import model.AuthData;
 import model.ErrorResponse;
 import model.RegisterRequest;
-import model.RegisterResult;
 import service.RegisterService;
 import spark.Request;
 import spark.Response;
@@ -21,7 +21,7 @@ public class RegisterHandler extends BaseHandler {
                 return toJson(new ErrorResponse("Error: bad request"));
             }
 
-            RegisterResult registerResult = registerService.register(registerRequest);
+            AuthData registerResult = registerService.register(registerRequest);
 
             if (registerResult.authToken() != null) {
                 res.status(200);
