@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.ClearResult;
 
@@ -10,6 +11,7 @@ public class ClearService  {
             // Call the static clear() methods in each DAO, need to add GameDAO after I create it
             UserDAO.clear();
             AuthDAO.clear();
+            GameDAO.clear();
 
             // Return success (empty response)
             return new ClearResult(null);

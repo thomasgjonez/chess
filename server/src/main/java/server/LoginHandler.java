@@ -17,7 +17,7 @@ public class LoginHandler extends BaseHandler{
 
             if (loginRequest.username() == null || loginRequest.password() == null) {
                 res.status(401);
-                return toJson(new ErrorResponse("Error: bad request"));
+                return toJson(new ErrorResponse("Error: unauthorized"));
             }
 
             AuthData loginResult = loginService.login(loginRequest);
