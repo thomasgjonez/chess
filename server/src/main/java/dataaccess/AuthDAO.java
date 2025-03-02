@@ -26,4 +26,8 @@ public class AuthDAO {
     public static boolean isValidAuth(String authToken) {
         return authTokens.containsKey(authToken);
     }
+
+    public static void clear(){
+        authTokens.clear();
+    }
 }

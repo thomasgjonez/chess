@@ -17,4 +17,8 @@ public class UserDAO {
         users.put(username, new UserData(username, password, email));
     }
 
+    public static void clear(){
+        users.clear();
+    }
+
 }

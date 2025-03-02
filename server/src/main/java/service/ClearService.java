@@ -1,0 +1,21 @@
+package service;
+
+import dataaccess.AuthDAO;
+import dataaccess.UserDAO;
+import model.ClearResult;
+
+public class ClearService {
+    public ClearResult clear() {
+        try {
+            // Call the static clear() methods in each DAO, need to add GameDAO after I create it
+            UserDAO.clear();
+            AuthDAO.clear();
+
+            // Return success (empty response)
+            return new ClearResult("The clear handler was called");
+        } catch (Exception e) {
+            // Return an error response if something goes wrong
+            return new ClearResult("Error: failed to clear the database");
+        }
+    }
+}
