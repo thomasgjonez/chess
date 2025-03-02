@@ -7,17 +7,15 @@ import service.ClearService;
 import spark.Request;
 import spark.Response;
 
-public class ClearHandler {
+public class ClearHandler extends BaseHandler {
 
     public Object handleRequest(Request req, Response res){
         try {
-
-            ClearService clearService = new ClearService();
-            ClearResult clearResult = clearService.clear();
-            return new Gson().toJson(clearResult);
+            new ClearService().clear();
+            res.status(200);
+            return toJson(new ClearResult(null));
         } catch (Exception e) {
-                res.status(500); // Internal Server Error
-                return new Gson().toJson(new ErrorResponse("Internal server error"));
+            return handleException(res, e);
         }
     }
 }

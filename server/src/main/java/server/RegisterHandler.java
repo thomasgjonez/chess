@@ -9,27 +9,29 @@ import spark.Request;
 import spark.Response;
 
 
-public class RegisterHandler {
+public class RegisterHandler extends BaseHandler {
+    private final RegisterService registerService = new RegisterService();
 
-    public Object handleRequest(Request req, Response res){
+    public Object handleRequest(Request req, Response res) {
         try {
-            Gson gson = new Gson();
-            RegisterRequest registerRequest = gson.fromJson(req.body(), RegisterRequest.class);
+            RegisterRequest registerRequest = new Gson().fromJson(req.body(), RegisterRequest.class);
 
             if (registerRequest.username() == null || registerRequest.password() == null || registerRequest.email() == null) {
-                res.status(500);
-                return gson.toJson(new ErrorResponse("Missing required fields"));
+                res.status(400);
+                return toJson(new ErrorResponse("Error: bad request"));
             }
 
-            RegisterService registerService = new RegisterService();
             RegisterResult registerResult = registerService.register(registerRequest);
 
-            return gson.toJson(registerResult);
+            if (registerResult.authToken() != null) {
+                res.status(200);
+                return toJson(registerResult);
+            } else {
+                res.status(403);
+                return toJson(new ErrorResponse("Error: already taken"));
+            }
         } catch (Exception e) {
-            res.status(500); // Internal Server Error
-            return new Gson().toJson(new ErrorResponse("Internal server error"));
+            return handleException(res, e);
         }
-
     }
-
 }

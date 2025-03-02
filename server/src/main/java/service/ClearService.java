@@ -4,7 +4,7 @@ import dataaccess.AuthDAO;
 import dataaccess.UserDAO;
 import model.ClearResult;
 
-public class ClearService {
+public class ClearService  {
     public ClearResult clear() {
         try {
             // Call the static clear() methods in each DAO, need to add GameDAO after I create it
@@ -12,7 +12,7 @@ public class ClearService {
             AuthDAO.clear();
 
             // Return success (empty response)
-            return new ClearResult("The clear handler was called");
+            return new ClearResult(null);
         } catch (Exception e) {
             // Return an error response if something goes wrong
             return new ClearResult("Error: failed to clear the database");
