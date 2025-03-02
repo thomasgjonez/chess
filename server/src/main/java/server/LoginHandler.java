@@ -16,13 +16,13 @@ public class LoginHandler extends BaseHandler{
             LoginRequest loginRequest = new Gson().fromJson(req.body(), LoginRequest.class);
 
             if (loginRequest.username() == null || loginRequest.password() == null) {
-                res.status(400);
+                res.status(401);
                 return toJson(new ErrorResponse("Error: bad request"));
             }
 
             AuthData loginResult = loginService.login(loginRequest);
 
-            if (loginResult.authToken() != null) {
+            if (loginResult != null) {
                 res.status(200);
                 return toJson(loginResult);
             } else {
@@ -31,7 +31,7 @@ public class LoginHandler extends BaseHandler{
             }
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return handleException(res, e);
         }
     }
 }

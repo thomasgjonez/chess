@@ -12,11 +12,11 @@ public class LoginService extends BaseService{
             UserData user = UserDAO.getUser(request.username());
 
             if (user == null) {
-                return new AuthData(null,null);
+                return null;
             }
 
             if (!user.password().equals(request.password())) {
-                return new AuthData(null, null);
+                return null;
             }
 
             String authToken = generateAuthToken();
@@ -24,7 +24,7 @@ public class LoginService extends BaseService{
 
             return new AuthData(request.username(), authToken);
         } catch (Exception e) {
-            return new AuthData(null, "Error: internal server error");
+            return null;
         }
     }
 }
