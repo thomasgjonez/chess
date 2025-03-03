@@ -2,7 +2,9 @@ package dataaccess;
 
 import model.GameData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GameDAO {
@@ -18,6 +20,10 @@ public class GameDAO {
 
     public static GameData getGame(int gameID){
         return games.get(gameID);
+    }
+
+    public static List<GameData> listGames(){
+        return new ArrayList<>(games.values());
     }
 
     public static void clear(){

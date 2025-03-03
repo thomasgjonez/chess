@@ -19,7 +19,7 @@ public class LogoutHandler extends BaseHandler{
                 res.status(401);
                 return toJson(new ErrorResponse("Error: unauthorized"));
             }
-
+            //maybe just get rid of this LogoutRequest since its just an authToken??
             LogoutRequest logoutRequest = new LogoutRequest(authToken);
             ClearResult logoutResult = logoutService.logout(logoutRequest);
 
