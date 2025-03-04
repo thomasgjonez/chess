@@ -20,10 +20,7 @@ public class GameDAO {
         return gameID;
     }
 
-    public static GameData getGame(int gameID) throws DataAccessException{
-        if (!games.containsKey(gameID)) {
-            throw new DataAccessException("Game not found");
-        }
+    public static GameData getGame(int gameID) {
         return games.get(gameID);
     }
 
