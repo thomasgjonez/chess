@@ -1,21 +1,21 @@
 package service;
 
-import model.ClearResult;
+import model.SuccessResult;
 import model.LogoutRequest;
 import dataaccess.AuthDAO;
 
 public class LogoutService extends BaseService{
-    public ClearResult logout(LogoutRequest req){
+    public SuccessResult logout(LogoutRequest req){
         try {
             if (!AuthDAO.isValidAuth(req.authToken())) {
-                return new ClearResult("Error: unauthorized");
+                return new SuccessResult("Error: unauthorized");
             }
 
             AuthDAO.deleteAuth(req.authToken());
-            return new ClearResult(null); // Empty success response
+            return new SuccessResult(null); // Empty success response
 
         } catch (Exception e) {
-            return new ClearResult("Error: internal server error");
+            return new SuccessResult("Error: internal server error");
         }
     }
 }

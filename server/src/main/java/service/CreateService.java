@@ -2,7 +2,6 @@ package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
-import model.ClearResult;
 import model.CreateRequest;
 import model.CreateResponse;
 

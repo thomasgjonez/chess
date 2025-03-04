@@ -31,4 +31,9 @@ public class GameDAO {
         nextGameID = 1000;
     }
 
+    public static void updateGame(GameData gameData) {
+        if (games.containsKey(gameData.gameID())) {
+            games.put(gameData.gameID(), gameData);
+        }
+    }
 }

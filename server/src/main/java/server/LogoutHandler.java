@@ -1,7 +1,6 @@
 package server;
 
-import com.google.gson.Gson;
-import model.ClearResult;
+import model.SuccessResult;
 import model.ErrorResponse;
 import model.LogoutRequest;
 import service.LogoutService;
@@ -21,7 +20,7 @@ public class LogoutHandler extends BaseHandler{
             }
             //maybe just get rid of this LogoutRequest since its just an authToken??
             LogoutRequest logoutRequest = new LogoutRequest(authToken);
-            ClearResult logoutResult = logoutService.logout(logoutRequest);
+            SuccessResult logoutResult = logoutService.logout(logoutRequest);
 
             if (logoutResult.message() != null) {
                 res.status(401);
