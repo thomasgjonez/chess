@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import model.GameData;
@@ -10,6 +11,10 @@ import model.SuccessResult;
 public class JoinGameService extends BaseService {
     public SuccessResult joinGame(String authToken, JoinGameRequest joinGameRequest){
         if (!AuthDAO.isValidAuth(authToken)) {
+            return new SuccessResult("Error: unauthorized");
+        }
+        String username = AuthDAO.getUsername(authToken);
+        if (username == null) {
             return new SuccessResult("Error: unauthorized");
         }
 
@@ -25,19 +30,18 @@ public class JoinGameService extends BaseService {
             return new SuccessResult("Error: bad request");
         }
 
-        String playerColor = joinGameRequest.playerColor().toUpperCase();
-        String username = AuthDAO.getUsername(authToken); // Get username from authToken
+        ChessGame.TeamColor playerColor = joinGameRequest.playerColor();
 
-        if (playerColor.equals("WHITE")) {
-            if (gameData.whiteUser() != null) {
+        if (playerColor == ChessGame.TeamColor.WHITE) {
+            if (gameData.whiteUsername() != null) {
                 return new SuccessResult("Error: already taken");
             }
-            gameData = new GameData(gameID, username, gameData.blackUser(), gameData.gameName());
-        } else if (playerColor.equals("BLACK")) {
-            if (gameData.blackUser() != null) {
+            gameData = new GameData(gameID, username, gameData.blackUsername(), gameData.gameName());
+        } else if (playerColor == ChessGame.TeamColor.BLACK) {
+            if (gameData.blackUsername() != null) {
                 return new SuccessResult("Error: already taken");
             }
-            gameData = new GameData(gameID, gameData.whiteUser(), username, gameData.gameName());
+            gameData = new GameData(gameID, gameData.whiteUsername(), username, gameData.gameName());
         } else {
             return new SuccessResult("Error: bad request");
         }
