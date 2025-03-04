@@ -15,7 +15,7 @@ public class CreateServiceTest {
     private CreateService createGameService;
 
     @BeforeEach
-    public void Setup(){
+    public void setup(){
         AuthDAO.createAuth("testUser","auth123");
         createGameService = new CreateService();
     }
@@ -29,7 +29,7 @@ public class CreateServiceTest {
     }
 
     @Test
-    public void CreatGameWithInvalidAuthToken(){
+    public void creatGameWithInvalidAuthToken(){
         CreateRequest req = new CreateRequest("gameName");
         CreateResult result = createGameService.create("InvalidAuth", req);
 

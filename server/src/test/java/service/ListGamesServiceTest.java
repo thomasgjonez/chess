@@ -15,7 +15,7 @@ public class ListGamesServiceTest {
     private ListGamesService listGamesService;
 
     @BeforeEach
-    public void Setup(){
+    public void setup(){
         AuthDAO.createAuth("testUser","auth123");
         listGamesService = new ListGamesService();
     }
@@ -35,7 +35,7 @@ public class ListGamesServiceTest {
     }
 
     @Test
-    public void ListGameswithUnauthorizedAuthToken(){
+    public void listGameswithUnauthorizedAuthToken(){
         ListGamesResult result = listGamesService.listGames("invalidAuth");
 
         assertNull(result, "should return null when an unauthorized auth token is provided");

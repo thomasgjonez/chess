@@ -17,7 +17,7 @@ public class LogoutServiceTest {
     private LogoutService logoutService;
 
     @BeforeEach
-    public void Setup(){
+    public void setup(){
         logoutService = new LogoutService();
     }
 
@@ -31,7 +31,7 @@ public class LogoutServiceTest {
     }
 
     @Test
-    public void LogoutWithoutVerifiedAuthTokenInDB(){
+    public void logoutWithoutVerifiedAuthTokenInDB(){
         ApiResponse result = logoutService.logout("auth123");
 
         assertNotNull(result.message(), "not null indicates there was an error thrown and you were not logged out properly");

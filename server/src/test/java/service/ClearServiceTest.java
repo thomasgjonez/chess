@@ -16,7 +16,7 @@ public class ClearServiceTest {
     private ClearService clearService;
 
     @BeforeEach
-    public void Setup(){
+    public void setup(){
         clearService = new ClearService();
     }
 

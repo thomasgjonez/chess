@@ -17,7 +17,7 @@ public class LoginServiceTest {
     private LoginService loginService;
 
     @BeforeEach
-    public void Setup(){
+    public void setup(){
         loginService = new LoginService();
     }
 
@@ -33,7 +33,7 @@ public class LoginServiceTest {
 
     }
     @Test
-    public void LoginWithoutUserInDataBase(){
+    public void loginWithoutUserInDataBase(){
         LoginRequest loginRequest = new LoginRequest("testUser3", "password123");
         AuthData result = loginService.login(loginRequest);
 

@@ -7,22 +7,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserDAO {
-    private static final Map<String, UserData> users = new HashMap<>();
+    private static final Map<String, UserData> USERS = new HashMap<>();
 
     public static boolean userExists(String username) {
-        return users.containsKey(username);
+        return USERS.containsKey(username);
     }
 
     public static void createUser(String username, String password, String email) {
-        users.put(username, new UserData(username, password, email));
+        USERS.put(username, new UserData(username, password, email));
     }
 
     public static UserData getUser(String username) {
-        return users.get(username);
+        return USERS.get(username);
     }
 
     public static void clear(){
-        users.clear();
+        USERS.clear();
     }
 
 }
