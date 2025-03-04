@@ -10,12 +10,7 @@ public class LogoutHandler extends BaseHandler{
 
     public Object handleRequest(Request req, Response res){
         try{
-            String authToken = req.headers("Authorization");
-
-            if (authToken == null){
-                res.status(401);
-                return toJson(new ApiResponse("Error: unauthorized"));
-            }
+            String authToken = getValidAuthToken(req, res);
             //maybe just get rid of this LogoutRequest since its just an authToken??
             ApiResponse logoutResult = logoutService.logout(authToken);
 

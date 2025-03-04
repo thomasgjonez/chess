@@ -14,6 +14,7 @@ public class JoinGameService extends BaseService {
             if (!AuthDAO.isValidAuth(authToken)) {
                 return new ApiResponse("Error: unauthorized");
             }
+
             String username = AuthDAO.getUsername(authToken);
             if (username == null) {
                 return new ApiResponse("Error: unauthorized");
@@ -32,17 +33,18 @@ public class JoinGameService extends BaseService {
             }
 
             ChessGame.TeamColor playerColor = joinGameRequest.playerColor();
+            ChessGame gameInstance = gameData.game();
 
             if (playerColor == ChessGame.TeamColor.WHITE) {
                 if (gameData.whiteUsername() != null) {
                     return new ApiResponse("Error: already taken");
                 }
-                gameData = new GameData(gameID, username, gameData.blackUsername(), gameData.gameName());
+                gameData = new GameData(gameID, username, gameData.blackUsername(), gameData.gameName(), gameInstance);
             } else if (playerColor == ChessGame.TeamColor.BLACK) {
                 if (gameData.blackUsername() != null) {
                     return new ApiResponse("Error: already taken");
                 }
-                gameData = new GameData(gameID, gameData.whiteUsername(), username, gameData.gameName());
+                gameData = new GameData(gameID, gameData.whiteUsername(), username, gameData.gameName(), gameInstance);
             } else {
                 return new ApiResponse("Error: bad request");
             }

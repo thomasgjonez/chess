@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import model.ApiResponse;
 import model.CreateRequest;
 import model.CreateResult;
 import service.CreateService;
@@ -12,17 +13,12 @@ public class CreateHandler extends BaseHandler{
 
     public Object handleRequest(Request req, Response res){
         try{
-            String authToken = req.headers("Authorization");
+            String authToken = getValidAuthToken(req, res);
             CreateRequest createRequest = new Gson().fromJson(req.body(), CreateRequest.class);
-
-            if (authToken == null) {
-                res.status(401);
-                return toJson(new ErrorResponse("Error: unauthorized"));
-            }
 
             if (createRequest == null || createRequest.gameName() == null) {
                 res.status(400);
-                return toJson(new ErrorResponse("Error: bad request"));
+                return toJson(new ApiResponse("Error: bad request"));
             }
 
             CreateResult createResponse = createService.create(authToken, createRequest);
@@ -36,7 +32,7 @@ public class CreateHandler extends BaseHandler{
                 } else {
                     res.status(400); // General bad request
                 }
-                return toJson(new ErrorResponse(createResponse.message()));
+                return toJson(new ApiResponse(createResponse.message()));
             }
 
         }catch (Exception e) {

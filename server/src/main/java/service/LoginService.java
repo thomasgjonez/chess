@@ -11,9 +11,6 @@ public class LoginService extends BaseService{
         try {
             UserData user = UserDAO.getUser(request.username());
 
-            if (user == null) {
-                return null;
-            }
 
             if (!user.password().equals(request.password())) {
                 return null;

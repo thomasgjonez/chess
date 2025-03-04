@@ -11,12 +11,7 @@ public class ListGamesHandler extends BaseHandler{
 
     public Object handleRequest(Request req, Response res){
         try{
-            String authToken = req.headers("Authorization");
-
-            if (authToken == null){
-                res.status(401);
-                return toJson(new ApiResponse("Error: unauthorized"));
-            }
+            String authToken = getValidAuthToken(req, res);
             ListGamesResult listGamesResult = listGamesService.listGames(authToken);
 
             if(listGamesResult != null){

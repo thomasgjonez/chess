@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.GameData;
 
 import java.util.ArrayList;
@@ -13,12 +14,16 @@ public class GameDAO {
 
     public static int createGame(String GameName){
         int gameID = nextGameID++;
-        GameData game = new GameData(gameID, null, null, GameName);
+        ChessGame newGame = new ChessGame();
+        GameData game = new GameData(gameID, null, null, GameName, newGame);
         games.put(gameID, game);
         return gameID;
     }
 
-    public static GameData getGame(int gameID){
+    public static GameData getGame(int gameID) throws DataAccessException{
+        if (!games.containsKey(gameID)) {
+            throw new DataAccessException("Game not found");
+        }
         return games.get(gameID);
     }
 

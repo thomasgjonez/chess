@@ -12,13 +12,8 @@ public class JoinGameHandler extends BaseHandler{
 
     public Object handleRequest(Request req, Response res){
         try{
-            String authToken = req.headers("Authorization");
+            String authToken = getValidAuthToken(req, res);
             JoinGameRequest joinGameRequest = new Gson().fromJson(req.body(), JoinGameRequest.class);
-
-            if (authToken == null) {
-                res.status(401);
-                return toJson(new ApiResponse("Error: unauthorized"));
-            }
 
             if (joinGameRequest == null || joinGameRequest.gameID() == null || joinGameRequest.playerColor() == null) {
                 res.status(400);
