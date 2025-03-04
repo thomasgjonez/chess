@@ -1,6 +1,6 @@
 package server;
 
-import model.ErrorResponse;
+import model.ApiResponse;
 import model.ListGamesResult;
 import service.ListGamesService;
 import spark.Request;
@@ -15,7 +15,7 @@ public class ListGamesHandler extends BaseHandler{
 
             if (authToken == null){
                 res.status(401);
-                return toJson(new ErrorResponse("Error: unauthorized"));
+                return toJson(new ApiResponse("Error: unauthorized"));
             }
             ListGamesResult listGamesResult = listGamesService.listGames(authToken);
 
@@ -24,7 +24,7 @@ public class ListGamesHandler extends BaseHandler{
                 return toJson(listGamesResult);
             } else{
                 res.status(401);
-                return toJson(new ErrorResponse("Error: unauthorized"));
+                return toJson(new ApiResponse("Error: unauthorized"));
             }
 
 

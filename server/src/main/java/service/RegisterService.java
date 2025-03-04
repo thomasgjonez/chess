@@ -3,14 +3,11 @@ package service;
 import dataaccess.UserDAO;
 import dataaccess.AuthDAO;
 import model.AuthData;
-import model.RegisterRequest;
-
-
-
+import model.UserData;
 
 
 public class RegisterService extends BaseService{
-    public AuthData register(RegisterRequest request) {
+    public AuthData register(UserData request) {
         // Validate if user exists, store user in database, return success or failure
         if (UserDAO.userExists(request.username())) {
             return new AuthData(null, null);

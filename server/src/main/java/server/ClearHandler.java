@@ -1,6 +1,6 @@
 package server;
 
-import model.SuccessResult;
+import model.ApiResponse;
 import service.ClearService;
 import spark.Request;
 import spark.Response;
@@ -11,7 +11,7 @@ public class ClearHandler extends BaseHandler {
         try {
             new ClearService().clear();
             res.status(200);
-            return toJson(new SuccessResult(null));
+            return toJson(new ApiResponse(null));
         } catch (Exception e) {
             return handleException(res, e);
         }

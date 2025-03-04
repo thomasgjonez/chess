@@ -1,8 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
+import model.ApiResponse;
 import model.AuthData;
-import model.ErrorResponse;
 import model.LoginRequest;
 import service.LoginService;
 import spark.Request;
@@ -17,7 +17,7 @@ public class LoginHandler extends BaseHandler{
 
             if (loginRequest.username() == null || loginRequest.password() == null) {
                 res.status(401);
-                return toJson(new ErrorResponse("Error: unauthorized"));
+                return toJson(new ApiResponse("Error: unauthorized"));
             }
 
             AuthData loginResult = loginService.login(loginRequest);
@@ -27,7 +27,7 @@ public class LoginHandler extends BaseHandler{
                 return toJson(loginResult);
             } else {
                 res.status(401);
-                return toJson(new ErrorResponse("Error: unauthorized"));
+                return toJson(new ApiResponse("Error: unauthorized"));
             }
 
         } catch (Exception e) {

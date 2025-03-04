@@ -1,9 +1,9 @@
 package server;
 
 import com.google.gson.Gson;
+import model.ApiResponse;
 import model.AuthData;
-import model.ErrorResponse;
-import model.RegisterRequest;
+import model.UserData;
 import service.RegisterService;
 import spark.Request;
 import spark.Response;
@@ -14,11 +14,11 @@ public class RegisterHandler extends BaseHandler {
 
     public Object handleRequest(Request req, Response res) {
         try {
-            RegisterRequest registerRequest = new Gson().fromJson(req.body(), RegisterRequest.class);
+            UserData registerRequest = new Gson().fromJson(req.body(), UserData.class);
 
             if (registerRequest.username() == null || registerRequest.password() == null || registerRequest.email() == null) {
                 res.status(400);
-                return toJson(new ErrorResponse("Error: bad request"));
+                return toJson(new ApiResponse("Error: bad request"));
             }
 
             AuthData registerResult = registerService.register(registerRequest);
@@ -28,7 +28,7 @@ public class RegisterHandler extends BaseHandler {
                 return toJson(registerResult);
             } else {
                 res.status(403);
-                return toJson(new ErrorResponse("Error: already taken"));
+                return toJson(new ApiResponse("Error: already taken"));
             }
         } catch (Exception e) {
             return handleException(res, e);

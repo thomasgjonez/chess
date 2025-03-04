@@ -1,8 +1,6 @@
 package server;
 
-import model.SuccessResult;
-import model.ErrorResponse;
-import model.LogoutRequest;
+import model.ApiResponse;
 import service.LogoutService;
 import spark.Request;
 import spark.Response;
@@ -16,15 +14,14 @@ public class LogoutHandler extends BaseHandler{
 
             if (authToken == null){
                 res.status(401);
-                return toJson(new ErrorResponse("Error: unauthorized"));
+                return toJson(new ApiResponse("Error: unauthorized"));
             }
             //maybe just get rid of this LogoutRequest since its just an authToken??
-            LogoutRequest logoutRequest = new LogoutRequest(authToken);
-            SuccessResult logoutResult = logoutService.logout(logoutRequest);
+            ApiResponse logoutResult = logoutService.logout(authToken);
 
             if (logoutResult.message() != null) {
                 res.status(401);
-                return toJson(new ErrorResponse(logoutResult.message()));
+                return toJson(new ApiResponse(logoutResult.message()));
             }
 
             res.status(200); // Success

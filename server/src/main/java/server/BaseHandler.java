@@ -1,7 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import model.ErrorResponse;
+import model.ApiResponse;
 import spark.Response;
 
 public abstract class BaseHandler {
@@ -15,6 +15,6 @@ public abstract class BaseHandler {
     // handle exceptions and return standarized error messages
     protected String handleException(Response res, Exception e) {
         res.status(500);
-        return toJson(new ErrorResponse("Error: " + e.getMessage()));
+        return toJson(new ApiResponse("Error: " + e.getMessage()));
     }
 }

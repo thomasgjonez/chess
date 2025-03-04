@@ -1,25 +1,21 @@
 package service;
 
-import dataaccess.GameDAO;
-import model.GameData;
-import model.SuccessResult;
-import model.LogoutRequest;
+import model.ApiResponse;
 import dataaccess.AuthDAO;
 
-import java.util.List;
 
 public class LogoutService extends BaseService{
-    public SuccessResult logout(LogoutRequest req){
+    public ApiResponse logout(String authToken){
         try {
-            if (!AuthDAO.isValidAuth(req.authToken())) {
-                return new SuccessResult("Error: unauthorized");
+            if (!AuthDAO.isValidAuth(authToken)) {
+                return new ApiResponse("Error: unauthorized");
             }
 
-            AuthDAO.deleteAuth(req.authToken());
-            return new SuccessResult(null);
+            AuthDAO.deleteAuth(authToken);
+            return new ApiResponse(null);
 
         } catch (Exception e) {
-            return new SuccessResult("Error: internal server error");
+            return new ApiResponse("Error: internal server error");
         }
     }
 }

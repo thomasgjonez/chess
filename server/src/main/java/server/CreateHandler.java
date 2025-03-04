@@ -2,8 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import model.CreateRequest;
-import model.CreateResponse;
-import model.ErrorResponse;
+import model.CreateResult;
 import service.CreateService;
 import spark.Request;
 import spark.Response;
@@ -26,7 +25,7 @@ public class CreateHandler extends BaseHandler{
                 return toJson(new ErrorResponse("Error: bad request"));
             }
 
-            CreateResponse createResponse = createService.create(authToken, createRequest);
+            CreateResult createResponse = createService.create(authToken, createRequest);
 
             if (createResponse.gameID() != null) {
                 res.status(200);

@@ -1,9 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
-import model.ErrorResponse;
 import model.JoinGameRequest;
-import model.SuccessResult;
+import model.ApiResponse;
 import service.JoinGameService;
 import spark.Request;
 import spark.Response;
@@ -18,15 +17,15 @@ public class JoinGameHandler extends BaseHandler{
 
             if (authToken == null) {
                 res.status(401);
-                return toJson(new ErrorResponse("Error: unauthorized"));
+                return toJson(new ApiResponse("Error: unauthorized"));
             }
 
             if (joinGameRequest == null || joinGameRequest.gameID() == null || joinGameRequest.playerColor() == null) {
                 res.status(400);
-                return toJson(new ErrorResponse("Error: bad request"));
+                return toJson(new ApiResponse("Error: bad request"));
             }
 
-            SuccessResult joinGameResult = joinGameService.joinGame(authToken,joinGameRequest );
+            ApiResponse joinGameResult = joinGameService.joinGame(authToken,joinGameRequest );
 
             if(joinGameResult.message() == null){
                 res.status(200);
@@ -40,7 +39,7 @@ public class JoinGameHandler extends BaseHandler{
                 res.status(400);
             }
 
-            return toJson(new ErrorResponse(joinGameResult.message()));
+            return toJson(new ApiResponse(joinGameResult.message()));
         } catch (Exception e) {
             return handleException(res, e);
         }
