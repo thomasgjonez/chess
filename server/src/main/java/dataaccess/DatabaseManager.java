@@ -70,7 +70,20 @@ public class DatabaseManager {
         }
     }
 
-    private final String[] createStatements = {
+    public void configureDatabase() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        try (Connection conn = getConnection()) {
+            for (String sql : createStatements) {
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Error creating tables: " + e.getMessage());
+        }
+    }
+
+    public final String[] createStatements = {
             """
     CREATE TABLE IF NOT EXISTS UserTable (
         username VARCHAR(50) PRIMARY KEY,
