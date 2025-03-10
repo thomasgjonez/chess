@@ -69,4 +69,35 @@ public class DatabaseManager {
             throw new DataAccessException(e.getMessage());
         }
     }
+
+    private final String[] createStatements = {
+            """
+    CREATE TABLE IF NOT EXISTS UserTable (
+        username VARCHAR(50) PRIMARY KEY,
+        passwordHash VARCHAR(255) NOT NULL,
+        email VARCHAR(100) NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+    """,
+
+            """
+    CREATE TABLE IF NOT EXISTS GameTable (
+        gameID INT AUTO_INCREMENT PRIMARY KEY,
+        whiteUsername VARCHAR(50),
+        blackUsername VARCHAR(50),
+        gameName VARCHAR(100) NOT NULL,
+        gameState TEXT NOT NULL,
+        FOREIGN KEY (whiteUsername) REFERENCES UserTable(username),
+        FOREIGN KEY (blackUsername) REFERENCES UserTable(username)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+    """,
+
+            """
+    CREATE TABLE IF NOT EXISTS AuthTable (
+        authToken VARCHAR(255) PRIMARY KEY,
+        username VARCHAR(50) NOT NULL,
+        FOREIGN KEY (username) REFERENCES UserTable(username)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+    """
+    };
+
 }
