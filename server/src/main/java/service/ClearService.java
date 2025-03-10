@@ -9,7 +9,7 @@ public class ClearService  {
     public ApiResponse clear() {
         try {
             // Call the static clear() methods in each DAO, need to add GameDAO after I create it
-            UserDAO.clear();
+            //UserDAO.clear();
             AuthDAO.clear();
             GameDAO.clear();
 
