@@ -1,15 +1,19 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DatabaseManager;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.ApiResponse;
 
+import java.sql.Connection;
+
 public class ClearService  {
     public ApiResponse clear() {
-        try {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            UserDAO userDAO = new UserDAO(conn);
             // Call the static clear() methods in each DAO, need to add GameDAO after I create it
-            //UserDAO.clear();
+            userDAO.clear();
             AuthDAO.clear();
             GameDAO.clear();
 

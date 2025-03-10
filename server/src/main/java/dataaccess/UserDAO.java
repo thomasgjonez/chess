@@ -54,6 +54,14 @@ public class UserDAO {
         }
         return false;
     }
+
+    public void clear() throws SQLException{
+        String query = "DELETE FROM UserTable";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)){
+            stmt.executeUpdate();
+        }
+    }
 }
 
 
