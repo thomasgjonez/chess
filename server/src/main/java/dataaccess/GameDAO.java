@@ -41,8 +41,89 @@ public class GameDAO {
             throw new DataAccessException("Database error: " + e.getMessage());
         }
     }
-    private static final Map<Integer, GameData> GAMES = new HashMap<>();
-    private static int nextGameID = 1000;
+
+    public static GameData getGame(int gameID) throws DataAccessException{
+        String query = "SELECT * FROM GameTable WHERE gameID = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)){
+
+            stmt.setInt(1,gameID);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                ChessGame chessGame = new Gson().fromJson(rs.getString("gameState"),ChessGame.class);
+
+                return new GameData(
+                        rs.getInt("gameID"),
+                        rs.getString("whiteUsername"),
+                        rs.getString("blackUsername"),
+                        rs.getString("gameName"),
+                        chessGame
+                );
+            } else{
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Database error: " + e.getMessage());
+        }
+    }
+
+    public static List<GameData> listGames() throws DataAccessException{
+        List<GameData> gameList = new ArrayList<>();
+        String query = "SELECT gameID, whiteUsername, blackUsername, gameName, gameState FROM GameTable";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)){
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()){
+                gameList.add(new GameData(
+                        rs.getInt("gameID"),
+                        rs.getString("whiteUsername"),
+                        rs.getString("blackUsername"),
+                        rs.getString("gameName"),
+                        null//don't need actual game data
+                ));
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Database error: " + e.getMessage());
+        }
+        return gameList;
+    }
+
+    public static void updateGame(GameData gameData) throws DataAccessException{
+        String query = "UPDATE GameTable SET whiteUsername = ?, blackUsername = ? WHERE gameID = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, gameData.whiteUsername());
+            stmt.setString(2, gameData.blackUsername());
+            stmt.setInt(3, gameData.gameID());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e){
+            throw new DataAccessException("Database error: " + e.getMessage());
+        }
+    }
+
+    public static void clear() throws DataAccessException {
+        String query = "DELETE FROM GameTable";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQL Error in UserDAO.clear(): " + e.getMessage());
+            throw new DataAccessException("Database error: " + e.getMessage());
+        }
+    }
+
+//    private static final Map<Integer, GameData> GAMES = new HashMap<>();
+//    private static int nextGameID = 1000;
 
 //    public static int createGame(String gameName){
 //        int gameID = nextGameID++;
@@ -52,22 +133,22 @@ public class GameDAO {
 //        return gameID;
 //    }
 //
-    public static GameData getGame(int gameID) {
-        return GAMES.get(gameID);
-    }
+//    public static GameData getGame(int gameID) {
+//        return GAMES.get(gameID);
+//    }
 
-    public static List<GameData> listGames(){
-        return new ArrayList<>(GAMES.values());
-    }
+//    public static List<GameData> listGames(){
+//        return new ArrayList<>(GAMES.values());
+//    }
 
-    public static void clear(){
-        GAMES.clear();
-        nextGameID = 1000;
-    }
+//    public static void clear(){
+//        GAMES.clear();
+//        nextGameID = 1000;
+//    }
 
-    public static void updateGame(GameData gameData) {
-        if (GAMES.containsKey(gameData.gameID())) {
-            GAMES.put(gameData.gameID(), gameData);
-        }
-    }
+//    public static void updateGame(GameData gameData) {
+//        if (GAMES.containsKey(gameData.gameID())) {
+//            GAMES.put(gameData.gameID(), gameData);
+//        }
+//    }
 }

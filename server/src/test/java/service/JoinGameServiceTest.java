@@ -2,6 +2,7 @@ package service;
 
 import chess.ChessGame;
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import model.GameData;
 import model.JoinGameRequest;
@@ -16,7 +17,7 @@ public class JoinGameServiceTest {
     private int gameID;
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws DataAccessException{
         // Arrange: Create authentication and a game
         AuthDAO.createAuth("testUser", "auth123");
         gameID = GameDAO.createGame("testGame");
@@ -24,7 +25,7 @@ public class JoinGameServiceTest {
     }
 
     @Test
-    public void testJoinGameAsWhite() {
+    public void testJoinGameAsWhite() throws DataAccessException {
         JoinGameRequest request = new JoinGameRequest(ChessGame.TeamColor.WHITE, String.valueOf(gameID));
         ApiResponse result = joinGameService.joinGame("auth123", request);
 
