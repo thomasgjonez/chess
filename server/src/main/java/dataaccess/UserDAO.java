@@ -1,15 +1,10 @@
 package dataaccess;
 
-
-import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class UserDAO {
 
@@ -63,23 +58,6 @@ public class UserDAO {
         return false;
     }
 
-    //Extra from before?
-    public static UserData getUser(String username) throws DataAccessException {
-        String query = "SELECT username, passwordHash, email FROM UserTable WHERE username = ?";
-
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new UserData(rs.getString("username"), rs.getString("passwordHash"), rs.getString("email"));
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Database error: " + e.getMessage());
-        }
-        return null;
-    }
-
     public static void clear() throws DataAccessException {
         String query = "DELETE FROM UserTable";
 
@@ -94,22 +72,3 @@ public class UserDAO {
 
 
 }
-
-
-//private static final Map<String, UserData> USERS = new HashMap<>();
-//
-//public static boolean userExists(String username) {
-//    return USERS.containsKey(username);
-//}
-//
-//public static void createUser(String username, String password, String email) {
-//    USERS.put(username, new UserData(username, password, email));
-//}
-//
-//public static UserData getUser(String username) {
-//    return USERS.get(username);
-//}
-//
-//public static void clear(){
-//    USERS.clear();
-//}
