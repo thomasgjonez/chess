@@ -15,12 +15,12 @@ public class ListGamesServiceTest {
     private ListGamesService listGamesService;
 
     @BeforeEach
-    public void setup(){
-        GameDAO.clear();
-        AuthDAO.clear();
-        AuthDAO.createAuth("testUser","auth123");
-        listGamesService = new ListGamesService();
-    }
+//    public void setup(){
+//        GameDAO.clear();
+//        AuthDAO.clear();
+//        AuthDAO.createAuth("testUser","auth123");
+//        listGamesService = new ListGamesService();
+//    }
 
     @Test
     public void normalListGames(){

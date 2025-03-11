@@ -10,11 +10,12 @@ import java.sql.Connection;
 
 public class ClearService  {
     public ApiResponse clear() {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            UserDAO userDAO = new UserDAO(conn);
+        try  {
+            System.out.println("🔥 ClearService.clear() called!");
             // Call the static clear() methods in each DAO, need to add GameDAO after I create it
-            userDAO.clear();
             AuthDAO.clear();
+            UserDAO.clear();
+            System.out.println("UserDAO.clear() was called");
             GameDAO.clear();
 
             // Return success (empty response)

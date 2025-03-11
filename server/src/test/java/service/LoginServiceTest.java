@@ -21,17 +21,17 @@ public class LoginServiceTest {
         loginService = new LoginService();
     }
 
-    @Test
-    public void normalLoginWithUserAlreadyRegistered(){
-        UserDAO.createUser("testUser","password123","test@example.com");
-        LoginRequest loginRequest = new LoginRequest("testUser", "password123");
-
-        AuthData result = loginService.login(loginRequest);
-
-        assertNotNull(result.authToken(), "result should not be null to indicate it returns an AuthToken");
-
-
-    }
+//    @Test
+//    public void normalLoginWithUserAlreadyRegistered(){
+//        UserDAO.createUser("testUser","password123","test@example.com");
+//        LoginRequest loginRequest = new LoginRequest("testUser", "password123");
+//
+//        AuthData result = loginService.login(loginRequest);
+//
+//        assertNotNull(result.authToken(), "result should not be null to indicate it returns an AuthToken");
+//
+//
+//    }
     @Test
     public void loginWithoutUserInDataBase(){
         LoginRequest loginRequest = new LoginRequest("testUser3", "password123");

@@ -12,38 +12,44 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserDAO {
-    private final Connection conn;
 
-    public UserDAO(Connection conn) {
-        this.conn = conn;
-    }
-
-    public boolean userExists(String username) throws SQLException {
+    public static boolean userExists(String username) throws DataAccessException {
         String query = "SELECT username FROM UserTable WHERE username = ?";
 
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
             return rs.next();  // If there's a result, user exists
+        } catch (SQLException e) {
+            throw new DataAccessException("Database error: " + e.getMessage());
         }
     }
 
-    public void createUser(String username, String password, String email) throws SQLException {
+    public static void createUser(String username, String password, String email) throws DataAccessException {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());//hashes password before inserting into DB
         String query = "INSERT INTO UserTable (username, passwordHash, email) VALUES (?, ?, ?)";
 
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             stmt.setString(2, hashedPassword);
             stmt.setString(3, email);
             stmt.executeUpdate();
+        }catch (SQLException e) {
+            if (e.getMessage().contains("Duplicate entry")) {
+                throw new DataAccessException("Error: Username already taken");
+            } else {
+                throw new DataAccessException("Database error: " + e.getMessage());
+            }
         }
     }
 
-    public boolean verifyPassword(String username, String password) throws SQLException{
+    public static boolean verifyPassword(String username, String password) throws DataAccessException{
         String query = "SELECT passwordHash FROM UserTable WHERE username = ?";
 
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
 
@@ -51,17 +57,42 @@ public class UserDAO {
                 String storedHash = rs.getString("passwordHash");
                 return BCrypt.checkpw(password, storedHash);
             }
+        }catch (SQLException e) {
+            throw new DataAccessException("Database error: " + e.getMessage());
         }
         return false;
     }
 
-    public void clear() throws SQLException{
+    //Extra from before?
+    public static UserData getUser(String username) throws DataAccessException {
+        String query = "SELECT username, passwordHash, email FROM UserTable WHERE username = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new UserData(rs.getString("username"), rs.getString("passwordHash"), rs.getString("email"));
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Database error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public static void clear() throws DataAccessException {
         String query = "DELETE FROM UserTable";
 
-        try (PreparedStatement stmt = conn.prepareStatement(query)){
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQL Error in UserDAO.clear(): " + e.getMessage());
+            throw new DataAccessException("Database error: " + e.getMessage());
         }
     }
+
+
 }
 
 

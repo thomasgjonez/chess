@@ -2,6 +2,7 @@ package service;
 
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.ApiResponse;
@@ -21,7 +22,7 @@ public class ClearServiceTest {
     }
 
     @Test
-    public void clearAllDatabases(){
+    public void clearAllDatabases() throws DataAccessException {
         UserDAO.createUser("testUser","password123","test@example.com");
         AuthDAO.createAuth("testUser", "12345678910");
         GameDAO.createGame("randomgame");

@@ -11,10 +11,8 @@ import java.sql.Connection;
 
 public class LoginService extends BaseService{
     public AuthData login(LoginRequest request) {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            UserDAO userDAO = new UserDAO(conn);
-
-            if (userDAO.verifyPassword(request.username(),request.password())){
+        try {
+            if (UserDAO.verifyPassword(request.username(),request.password())){
                 String authToken = generateAuthToken();
                 AuthDAO.createAuth(request.username(), authToken);
 
