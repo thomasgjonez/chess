@@ -1,25 +1,57 @@
 package dataaccess;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class GameDAO {
+
+    public static int createGame(String gameName) throws DataAccessException {
+        String query = "INSERT INTO GameTable (gameName, whiteUsername, blackUsername, gameState ) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+
+            ChessGame game = new ChessGame();
+            String gameStateJson = new Gson().toJson(game);
+
+            stmt.setString(1, gameName);
+            stmt.setNull(2, Types.VARCHAR);
+            stmt.setNull(3,Types.VARCHAR);
+            stmt.setString(4,gameStateJson);
+            stmt.executeUpdate();
+
+            // Retrieve the generated gameID
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1); // Return the new gameID
+                } else {
+                    throw new DataAccessException("Creating game failed, no ID obtained.");
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("SQL Error in UserDAO.clear(): " + e.getMessage());
+            throw new DataAccessException("Database error: " + e.getMessage());
+        }
+    }
     private static final Map<Integer, GameData> GAMES = new HashMap<>();
     private static int nextGameID = 1000;
 
-    public static int createGame(String gameName){
-        int gameID = nextGameID++;
-        ChessGame newGame = new ChessGame();
-        GameData game = new GameData(gameID, null, null, gameName, newGame);
-        GAMES.put(gameID, game);
-        return gameID;
-    }
-
+//    public static int createGame(String gameName){
+//        int gameID = nextGameID++;
+//        ChessGame newGame = new ChessGame();
+//        GameData game = new GameData(gameID, null, null, gameName, newGame);
+//        GAMES.put(gameID, game);
+//        return gameID;
+//    }
+//
     public static GameData getGame(int gameID) {
         return GAMES.get(gameID);
     }
