@@ -4,6 +4,7 @@ import chess.ChessGame;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
+import dataaccess.UserDAO;
 import model.GameData;
 import model.JoinGameRequest;
 import model.ApiResponse;
@@ -15,10 +16,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JoinGameServiceTest {
     private JoinGameService joinGameService;
     private int gameID;
+    private ClearService clearService;
 
     @BeforeEach
-    public void setup() throws DataAccessException{
-        // Arrange: Create authentication and a game
+    public void setup() throws DataAccessException {
+        clearService = new ClearService();
+        clearService.clear();
+        UserDAO.createUser("testUser","test123", "test@gmail.com");
         AuthDAO.createAuth("testUser", "auth123");
         gameID = GameDAO.createGame("testGame");
         joinGameService = new JoinGameService();

@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,9 +9,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class RegisterServiceTest {
     private RegisterService registerService;
+    private ClearService clearService;
 
     @BeforeEach
-    public void setUp() {
+    public void setup() throws DataAccessException {
+        clearService = new ClearService();
+        clearService.clear();
         registerService = new RegisterService();
     }
 

@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.ApiResponse;
@@ -15,14 +16,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LogoutServiceTest {
     private LogoutService logoutService;
+    private ClearService clearService;
 
     @BeforeEach
-    public void setup(){
+    public void setup() throws DataAccessException {
+        clearService = new ClearService();
+        clearService.clear();
         logoutService = new LogoutService();
     }
 
     @Test
-    public void normalLogoutWithAuthToken(){
+    public void normalLogoutWithAuthToken() throws DataAccessException {
+        UserDAO.createUser("testUser","test123","test@gmail.com");
         AuthDAO.createAuth("testUser","auth123");
 
         ApiResponse result = logoutService.logout("auth123");

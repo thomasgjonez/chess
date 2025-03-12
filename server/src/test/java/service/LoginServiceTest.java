@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.ApiResponse;
@@ -15,23 +16,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LoginServiceTest {
     private LoginService loginService;
+    private ClearService clearService;
 
     @BeforeEach
-    public void setup(){
+    public void setup() throws DataAccessException {
+        clearService = new ClearService();
+        clearService.clear();
         loginService = new LoginService();
     }
 
-//    @Test
-//    public void normalLoginWithUserAlreadyRegistered(){
-//        UserDAO.createUser("testUser","password123","test@example.com");
-//        LoginRequest loginRequest = new LoginRequest("testUser", "password123");
-//
-//        AuthData result = loginService.login(loginRequest);
-//
-//        assertNotNull(result.authToken(), "result should not be null to indicate it returns an AuthToken");
-//
-//
-//    }
+    @Test
+    public void normalLoginWithUserAlreadyRegistered() throws DataAccessException {
+        UserDAO.createUser("testUser","password123","test@example.com");
+        LoginRequest loginRequest = new LoginRequest("testUser", "password123");
+
+        AuthData result = loginService.login(loginRequest);
+
+        assertNotNull(result.authToken(), "result should not be null to indicate it returns an AuthToken");
+
+
+    }
     @Test
     public void loginWithoutUserInDataBase(){
         LoginRequest loginRequest = new LoginRequest("testUser3", "password123");

@@ -23,8 +23,8 @@ public class ClearServiceTest {
 
     @Test
     public void clearAllDatabases() throws DataAccessException {
-        UserDAO.createUser("testUser","password123","test@example.com");
-        AuthDAO.createAuth("testUser", "12345678910");
+        UserDAO.createUser("CleartestUser","password123","test@example.com");
+        AuthDAO.createAuth("CleartestUser", "12345678910");
         GameDAO.createGame("randomgame");
 
         ApiResponse result = clearService.clear();

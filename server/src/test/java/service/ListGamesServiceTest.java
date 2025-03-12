@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.*;
@@ -13,17 +14,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ListGamesServiceTest {
     private ListGamesService listGamesService;
+    private ClearService clearService;
 
     @BeforeEach
-//    public void setup(){
-//        GameDAO.clear();
-//        AuthDAO.clear();
-//        AuthDAO.createAuth("testUser","auth123");
-//        listGamesService = new ListGamesService();
-//    }
+    public void setup() throws DataAccessException {
+        clearService = new ClearService();
+        clearService.clear();
+        UserDAO.createUser("testUser","test123", "test@gmail.com");
+        AuthDAO.createAuth("testUser","auth123");
+        listGamesService = new ListGamesService();
+    }
 
     @Test
-    public void normalListGames(){
+    public void normalListGames() throws DataAccessException {
         int gameID = GameDAO.createGame("testGame");
         GameData expectedGame = new GameData(1000, null, null, "testGame", null);
 
@@ -37,7 +40,7 @@ public class ListGamesServiceTest {
     }
 
     @Test
-    public void listGamesWithUnauthorizedAuthToken(){
+    public void listGamesWithUnauthorizedAuthToken() {
         ListGamesResult result = listGamesService.listGames("invalidAuth");
 
         assertNull(result, "should return null when an unauthorized auth token is provided");

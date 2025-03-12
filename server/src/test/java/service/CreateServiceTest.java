@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.*;
@@ -13,9 +14,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateServiceTest {
     private CreateService createGameService;
+    private ClearService clearService;
 
     @BeforeEach
-    public void setup(){
+    public void setup() throws DataAccessException {
+        clearService = new ClearService();
+        clearService.clear();
+        UserDAO.createUser("testUser","test123", "test@gmail.com");
         AuthDAO.createAuth("testUser","auth123");
         createGameService = new CreateService();
     }
