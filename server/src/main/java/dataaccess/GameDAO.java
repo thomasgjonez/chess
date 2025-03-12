@@ -35,7 +35,6 @@ public class GameDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("SQL Error in UserDAO.clear(): " + e.getMessage());
             throw new DataAccessException("Database error: " + e.getMessage());
         }
     }
