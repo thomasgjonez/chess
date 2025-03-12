@@ -19,19 +19,20 @@ public class AuthDAOTest {
 
     @Test
     public void createAuthNormal(){
-        assertDoesNotThrow(() -> AuthDAO.createAuth("testUser","12345"));//No error returned means it was successful
+        assertDoesNotThrow(() -> AuthDAO.createAuth("testUser","12345"), "No error returned means it was successful");
     }
 
     @Test
     public void createAuthWithUsernameNotInDBl(){
-        assertThrows(DataAccessException.class, () -> AuthDAO.createAuth("user","12345"));//Error returns since it will only create AuthTokens to Users that exist in DB
+        assertThrows(DataAccessException.class, () -> AuthDAO.createAuth("user","12345"),
+                "Error returns since it will only create AuthTokens to Users that exist in DB");
     }
 
     @Test void getUsernameWithRealAuthToken() throws DataAccessException{
         AuthDAO.createAuth("testUser","12345");
 
         String result = AuthDAO.getUsername("12345");
-        assertEquals("testUser", result);// result should == "testUser"
+        assertEquals("testUser", result, "result shold be equal to 'testUser'");
 
 
     }
@@ -40,26 +41,25 @@ public class AuthDAOTest {
         AuthDAO.createAuth("testUser","12345");
 
         String result = AuthDAO.getUsername("15");
-        assertNull(result);//result should be null if no user is returned.
-
+        assertNull(result,"result should be null if no user is returned.");
 
     }
 
     @Test void deleteAuthThatExists() throws DataAccessException{
         AuthDAO.createAuth("testUser","12345");
-        assertDoesNotThrow( () -> AuthDAO.deleteAuth("12345"));
+        assertDoesNotThrow( () -> AuthDAO.deleteAuth("12345"),"no error indicates success");
     }
 
     @Test
     public void testDeleteAuthWithNonExistentToken() throws DataAccessException {
-        assertDoesNotThrow(() -> AuthDAO.deleteAuth("nonExistentToken"));
+        assertDoesNotThrow(() -> AuthDAO.deleteAuth("nonExistentToken"),"no error indicates success");
     }
 
     @Test void testIsValidAuthTokenWithValidAuth() throws DataAccessException{
         AuthDAO.createAuth("testUser","12345");
 
         boolean result = AuthDAO.isValidAuth("12345");
-        assertTrue(result);
+        assertTrue(result,"result should be true");
 
     }
 
@@ -67,7 +67,7 @@ public class AuthDAOTest {
         AuthDAO.createAuth("testUser","12345");
 
         boolean result = AuthDAO.isValidAuth("15");
-        assertFalse(result);
+        assertFalse(result,"result should be false");
 
     }
 

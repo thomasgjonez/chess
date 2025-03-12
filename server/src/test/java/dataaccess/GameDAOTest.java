@@ -41,7 +41,7 @@ public class GameDAOTest {
     public void getGameWithRealGameID() throws DataAccessException{
         int gameId = GameDAO.createGame("gameName");
 
-        assertDoesNotThrow( () -> GameDAO.getGame(gameId));
+        assertDoesNotThrow( () -> GameDAO.getGame(gameId), "no error thrown means success");
 
     }
 
