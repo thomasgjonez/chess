@@ -48,7 +48,25 @@ public class UserDAOTest {
         UserDAO.createUser("testUser","test123","test@gmail.com");
 
         boolean result = UserDAO.verifyPassword("testUser","test123");
-        assertTrue(result);
+        assertTrue(result);// returns true if passwords are the same
+    }
+
+    @Test
+    public void verifyPasswordThatIsDifferent() throws DataAccessException{
+        UserDAO.createUser("testUser","test123","test@gmail.com");
+
+        boolean result = UserDAO.verifyPassword("testUser","test");
+        assertFalse(result);// returns false if passwords are different
+    }
+
+    @Test
+    public void clearNormal() throws DataAccessException{
+        UserDAO.createUser("testUser","test123","test@gmail.com");
+        UserDAO.clear();
+
+        boolean result = UserDAO.userExists("testUser");
+        assertFalse(result);//should be false to indicate that testUser doesn't exist
+
     }
 
 }
