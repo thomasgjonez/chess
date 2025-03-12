@@ -31,7 +31,8 @@ public class UserDAOTest {
 
     @Test
     public void createUsernameNormal(){
-        assertDoesNotThrow(() -> UserDAO.createUser("testUser","test123","test@gmail.com"),"No error returned means it was successful");
+        assertDoesNotThrow(() -> UserDAO.createUser(
+                "testUser","test123","test@gmail.com"),"No error returned means it was successful");
 
     }
 
@@ -39,7 +40,9 @@ public class UserDAOTest {
     public void createUsernameWithDuplicate() throws DataAccessException{
         UserDAO.createUser("testUser","test123","test@gmail.com");
 
-        assertThrows(DataAccessException.class, () -> UserDAO.createUser("testUser","test123","test@gmail.com"),"Should return error since testUser already exists in DB");
+        assertThrows(DataAccessException.class, () -> UserDAO.createUser(
+                "testUser","test123","test@gmail.com"),
+                "Should return error since testUser already exists in DB");
 
     }
 

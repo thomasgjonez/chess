@@ -27,14 +27,16 @@ public class GameDAOTest {
     public void createGameNormal() throws DataAccessException{
         int gameId = GameDAO.createGame("gameName");
 
-        assertEquals(Integer.class, ((Object) gameId).getClass(), "gameId should be an int, which indicates a game was successfully made");
+        assertEquals(Integer.class, ((Object) gameId).getClass(),
+                "gameId should be an int, which indicates a game was successfully made");
 
 
     }
 
     @Test
     public void createGameWithNullGameName() {
-        assertThrows(DataAccessException.class, () -> GameDAO.createGame(null), "Creating a game with a null name should throw a DataAccessException");
+        assertThrows(DataAccessException.class, () -> GameDAO.createGame(null),
+                "Creating a game with a null name should throw a DataAccessException");
     }
 
     @Test
@@ -75,18 +77,19 @@ public class GameDAOTest {
     }
 
     @Test
-    public void UpdateGameNormal()throws DataAccessException {
+    public void updateGameNormal()throws DataAccessException {
         UserDAO.createUser("playerWhite","test123","test@gmail.com");
         UserDAO.createUser("playerBlack","test123","test@gmail.com");
         int gameID = GameDAO.createGame("testGame");
 
-        GameData updatedGame = new GameData(gameID, "playerWhite", "playerBlack", "NonExistentGame", null);
+        GameData updatedGame = new GameData(
+                gameID, "playerWhite", "playerBlack", "NonExistentGame", null);
 
         assertDoesNotThrow( () -> GameDAO.updateGame(updatedGame), "Updating should not throw a DataAccessException");
     }
 
     @Test
-    public void UpdateGameWithUsersNotInDB()throws DataAccessException{
+    public void updateGameWithUsersNotInDB()throws DataAccessException{
         int gameID = GameDAO.createGame("testGame");
 
         GameData updatedGame = new GameData(gameID, "playerWhite", "playerBlack", "NonExistentGame", null);
