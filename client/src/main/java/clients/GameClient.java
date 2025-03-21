@@ -1,7 +1,9 @@
 package clients;
 
+import chess.ChessBoard;
+import chess.ChessGame;
 import ui.EscapeSequences;
-import ui.ChessBoard;
+import ui.ConsoleBoard;
 import java.util.Arrays;
 
 public class GameClient {
@@ -19,8 +21,11 @@ public class GameClient {
         };
     }
     public void printGame(){
-        ChessBoard game = new ChessBoard("WHITE");
-        game.printBoard();
+        //maybe I should just get the actual ChessGame instance, which will have everything i need, but I'll do that phase 6
+        ChessBoard board = new ChessBoard();
+        board.resetBoard();//this sets the game board up
+        ConsoleBoard game = new ConsoleBoard(board, ChessGame.TeamColor.WHITE);
+        game.renderBoard();
     }
 
     public String help(){
