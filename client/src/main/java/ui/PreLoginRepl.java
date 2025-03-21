@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class PreLoginRepl {
     private final PreLoginClient client;
+    private final postLoginRepl postLoginRepl;
 
     public PreLoginRepl(String serverUrl){
         client = new PreLoginClient(serverUrl);

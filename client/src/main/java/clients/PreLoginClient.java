@@ -31,11 +31,27 @@ public class PreLoginClient {
     }
 
     public String help() {
-        return """
-                - register"""+ EscapeSequences.SET_TEXT_BOLD+ EscapeSequences.SET_TEXT_COLOR_DARK_GREY+ """ <USERNAME> <PASSWORD> <EMAIL>""" + EscapeSequences.RESET_TEXT_BOLD_FAINT + EscapeSequences.RESET_TEXT_COLOR+ """ - to create an account
-                - login"""+ EscapeSequences.SET_TEXT_BOLD+ EscapeSequences.SET_TEXT_COLOR_DARK_GREY+ """ <USERNAME> <PASSWORD>""" + EscapeSequences.RESET_TEXT_BOLD_FAINT + EscapeSequences.RESET_TEXT_COLOR+ """- to play chess
-                - quit - exit program
-                - help - list possible commands
-                """;
+        return "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN+ "register" + EscapeSequences.RESET_TEXT_COLOR +
+                EscapeSequences.RESET_TEXT_BOLD_FAINT +
+                " " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_BLUE + "<USERNAME> <PASSWORD> <EMAIL>" +
+                EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.RESET_TEXT_BOLD_FAINT +
+                " - to create an account\n" +
+
+                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN+ "login" + EscapeSequences.RESET_TEXT_COLOR +
+                EscapeSequences.RESET_TEXT_BOLD_FAINT +
+                " " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_BLUE + "<USERNAME> <PASSWORD>" +
+                EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.RESET_TEXT_BOLD_FAINT +
+                " - to play chess\n" +
+
+                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "quit" + EscapeSequences.RESET_TEXT_COLOR +
+                EscapeSequences.RESET_TEXT_BOLD_FAINT +
+                " - exit program\n" +
+
+                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "help" + EscapeSequences.RESET_TEXT_COLOR +
+                EscapeSequences.RESET_TEXT_BOLD_FAINT +
+                " - list possible commands";
     }
+
+
+
 }
