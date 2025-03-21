@@ -1,21 +1,22 @@
 package ui;
 import static ui.EscapeSequences.*;
-import clients.PreLoginClient;
+
+import clients.PostLoginClient;
 
 import java.util.Objects;
 import java.util.Scanner;
 
-public class PreLoginRepl {
-    private final PreLoginClient client;
+public class PostLoginRepl {
+    private final PostLoginClient client;
     private final String serverUrl;
 
-    public PreLoginRepl(String serverUrl){
+    public PostLoginRepl(String serverUrl){
         this.serverUrl = serverUrl;
-        this.client = new PreLoginClient(serverUrl);
+        this.client = new PostLoginClient(serverUrl);
     }
 
     public void run() {
-        System.out.println(SET_TEXT_BOLD+  "Welcome to Chess! " + WHITE_KING);
+        System.out.println(SET_TEXT_BOLD+  "Welcome to Game Menu! " + WHITE_QUEEN);
         System.out.print(client.help());
 
         Scanner scanner = new Scanner(System.in);
@@ -26,10 +27,6 @@ public class PreLoginRepl {
             try {
                 result = client.eval(line);
                 System.out.print(result);
-                if (Objects.equals(result, "register success\n") || Objects.equals(result, "login success\n")){
-                    System.out.print("you are logged in\n\n\n");
-                    new PostLoginRepl(serverUrl).run();
-                }
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);

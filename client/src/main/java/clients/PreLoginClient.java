@@ -23,33 +23,33 @@ public class PreLoginClient {
     }
 
     public String register(String... params){
-        return "register was called";
+        return "register success\n";
     }
 
     public String login(String... params){
-        return "login was called";
+        return "login success\n";
     }
 
     public String help() {
-        return "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN+ "register" + EscapeSequences.RESET_TEXT_COLOR +
+        return "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN+ "Register" + EscapeSequences.RESET_TEXT_COLOR +
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +
                 " " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_BLUE + "<USERNAME> <PASSWORD> <EMAIL>" +
                 EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.RESET_TEXT_BOLD_FAINT +
                 " - to create an account\n" +
 
-                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN+ "login" + EscapeSequences.RESET_TEXT_COLOR +
+                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN+ "Login" + EscapeSequences.RESET_TEXT_COLOR +
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +
                 " " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_BLUE + "<USERNAME> <PASSWORD>" +
                 EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.RESET_TEXT_BOLD_FAINT +
                 " - to play chess\n" +
 
-                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "quit" + EscapeSequences.RESET_TEXT_COLOR +
+                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Quit" + EscapeSequences.RESET_TEXT_COLOR +
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +
                 " - exit program\n" +
 
-                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "help" + EscapeSequences.RESET_TEXT_COLOR +
+                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Help" + EscapeSequences.RESET_TEXT_COLOR +
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +
-                " - list possible commands";
+                " - list possible commands\n";
     }
 
 
