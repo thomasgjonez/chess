@@ -28,6 +28,17 @@ public class PostLoginRepl {
             try {
                 result = client.eval(line);
                 System.out.print(result);
+
+                if (Objects.equals(result, "join success\n") || Objects.equals(result, "observe success\n")){
+                    System.out.print("joining game...\n\n");
+                    GameRepl gameRepl = new GameRepl(serverUrl);
+                    boolean returnToPost = gameRepl.run();
+
+                    if (returnToPost) {
+                        System.out.print("Returned to Game Menu\n");
+                        System.out.println(client.help());
+                    }
+                }
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);

@@ -34,11 +34,11 @@ public class PostLoginClient {
     }
 
     public String joinGame(String... params){
-        return "joinGame was called";
+        return "join success\n";
     }
 
     public String observeGame(String... params){
-        return "observeGame was called";
+        return "observe success\n";
     }
 
     public String logout(String... params){
