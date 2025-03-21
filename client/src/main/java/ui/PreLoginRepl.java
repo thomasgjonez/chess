@@ -27,8 +27,14 @@ public class PreLoginRepl {
                 result = client.eval(line);
                 System.out.print(result);
                 if (Objects.equals(result, "register success\n") || Objects.equals(result, "login success\n")){
-                    System.out.print("you are logged in\n\n\n");
-                    new PostLoginRepl(serverUrl).run();
+                    System.out.print("you are logged in\n\n");
+                    PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl);
+                    boolean returnToPre = postLoginRepl.run();
+
+                    if (returnToPre) {
+                        System.out.print("Returned to Login Menu\n");
+                        System.out.println(client.help());
+                    }
                 }
             } catch (Throwable e) {
                 var msg = e.toString();

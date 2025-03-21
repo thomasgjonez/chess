@@ -74,11 +74,11 @@ public class PostLoginClient {
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +
                 " - to logout \n" +
 
-                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "quit" + EscapeSequences.RESET_TEXT_COLOR +
+                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Quit" + EscapeSequences.RESET_TEXT_COLOR +
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +
-                " - exit chess menu\n" +
+                " - exit game menu\n" +
 
-                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "help" + EscapeSequences.RESET_TEXT_COLOR +
+                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Help" + EscapeSequences.RESET_TEXT_COLOR +
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +
                 " - list possible commands\n";
     }

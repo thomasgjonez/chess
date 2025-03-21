@@ -2,6 +2,7 @@ package ui;
 import static ui.EscapeSequences.*;
 
 import clients.PostLoginClient;
+import clients.PreLoginClient;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -15,7 +16,7 @@ public class PostLoginRepl {
         this.client = new PostLoginClient(serverUrl);
     }
 
-    public void run() {
+    public boolean run() {
         System.out.println(SET_TEXT_BOLD+  "Welcome to Game Menu! " + WHITE_QUEEN);
         System.out.print(client.help());
 
@@ -33,6 +34,7 @@ public class PostLoginRepl {
             }
         }
         System.out.println();
+        return true;
     }
 
 }
