@@ -2,12 +2,17 @@ package clients;
 
 import ui.EscapeSequences;
 import ui.PreLoginRepl;
-
+import net.ServerFacade;
 import java.util.Arrays;
 
 public class PreLoginClient {
+    private final String serverUrl;
+    private final ServerFacade serverFacade;
+    private final String authToken;
+
     public PreLoginClient(String serverUrl) {
-        //this will be spot of to initate a server facade with the serverURL
+        this.serverUrl = serverUrl;
+        serverFacade = new ServerFacade(serverUrl);
     }
 
     public String eval(String input) {
@@ -23,6 +28,7 @@ public class PreLoginClient {
     }
 
     public String register(String... params){
+        serverFacade.register();
         return "register success\n";
     }
 
