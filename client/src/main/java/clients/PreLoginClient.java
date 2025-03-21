@@ -1,5 +1,6 @@
 package clients;
 
+import model.UserData;
 import ui.EscapeSequences;
 import ui.PreLoginRepl;
 import net.ServerFacade;
@@ -8,7 +9,6 @@ import java.util.Arrays;
 public class PreLoginClient {
     private final String serverUrl;
     private final ServerFacade serverFacade;
-    private final String authToken;
 
     public PreLoginClient(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -28,7 +28,16 @@ public class PreLoginClient {
     }
 
     public String register(String... params){
-        serverFacade.register();
+        // error handling for register/ don't have enough args or do I pass on the error messages from the actual server?
+        //make params an object
+        if(params.length < 4){
+            System.out.println("Need username, password, and email");
+        }
+        String username = params[1];
+        String password = params[2];
+        String email = params [3];
+
+        serverFacade.register(username, password, email);
         return "register success\n";
     }
 
