@@ -19,11 +19,8 @@ public class HTTPConnection {
             http.setRequestMethod(method);
             http.setDoOutput(true);
 
-            System.out.println("make request about to call write body");
             writeBody(request, http);
-            System.out.println("make request about to call http.connect()");
             http.connect();
-            System.out.println("make request about to throwIfnotsuccessful and return readBody");
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
         } catch (ResponseException ex) {
