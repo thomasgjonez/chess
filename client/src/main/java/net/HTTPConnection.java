@@ -12,15 +12,18 @@ public class HTTPConnection {
         this.serverUrl = serverUrl;
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    public <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
 
+            System.out.println("make request about to call write body");
             writeBody(request, http);
+            System.out.println("make request about to call http.connect()");
             http.connect();
+            System.out.println("make request about to throwIfnotsuccessful and return readBody");
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
         } catch (ResponseException ex) {

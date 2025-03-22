@@ -3,6 +3,7 @@ import static ui.EscapeSequences.*;
 
 import clients.PostLoginClient;
 import clients.PreLoginClient;
+import model.AuthData;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -10,10 +11,12 @@ import java.util.Scanner;
 public class PostLoginRepl {
     private final PostLoginClient client;
     private final String serverUrl;
+    private final AuthData authData;
 
-    public PostLoginRepl(String serverUrl){
+    public PostLoginRepl(String serverUrl, AuthData authData){
         this.serverUrl = serverUrl;
-        this.client = new PostLoginClient(serverUrl);
+        this.client = new PostLoginClient(serverUrl, authData);
+        this.authData = authData;
     }
 
     public boolean run() {

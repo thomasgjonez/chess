@@ -1,13 +1,20 @@
 package clients;
 
+import model.AuthData;
+import net.ServerFacade;
 import ui.EscapeSequences;
 import ui.PreLoginRepl;
 
 import java.util.Arrays;
 
 public class PostLoginClient {
-    public PostLoginClient(String serverUrl) {
-        //this will be spot of to initate a server facade with the serverURL
+    private final ServerFacade serverFacade;
+    private AuthData authData;
+
+    public PostLoginClient(String serverUrl, AuthData authData) {
+        this.serverFacade = new ServerFacade(serverUrl);
+        this.authData = authData;
+
     }
 
     public String eval(String input) {

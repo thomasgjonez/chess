@@ -1,21 +1,20 @@
 package clients;
 
-import model.UserData;
+import model.AuthData;
+import net.ResponseException;
 import ui.EscapeSequences;
-import ui.PreLoginRepl;
 import net.ServerFacade;
 import java.util.Arrays;
 
 public class PreLoginClient {
-    private final String serverUrl;
     private final ServerFacade serverFacade;
+    private AuthData authData;
 
     public PreLoginClient(String serverUrl) {
-        this.serverUrl = serverUrl;
-        serverFacade = new ServerFacade(serverUrl);
+        this.serverFacade = new ServerFacade(serverUrl);
     }
 
-    public String eval(String input) {
+    public String eval(String input) throws ResponseException {
         var tokens = input.toLowerCase().split(" ");
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
@@ -27,17 +26,21 @@ public class PreLoginClient {
         };
     }
 
-    public String register(String... params){
+    public String register(String... params) throws ResponseException {
         // error handling for register/ don't have enough args or do I pass on the error messages from the actual server?
         //make params an object
-        if(params.length < 4){
+        if(params.length < 3){
             System.out.println("Need username, password, and email");
+            return "register failed\n";
         }
-        String username = params[1];
-        String password = params[2];
-        String email = params [3];
+        String username = params[0];
+        String password = params[1];
+        String email = params [2];
+        System.out.println(username);
+        System.out.println(password);
+        System.out.println(email);
+        this.authData = serverFacade.register(username, password, email);
 
-        serverFacade.register(username, password, email);
         return "register success\n";
     }
 
@@ -67,6 +70,7 @@ public class PreLoginClient {
                 " - list possible commands\n";
     }
 
-
-
+    public AuthData getAuthData() {
+        return authData;
+    }
 }

@@ -28,13 +28,16 @@ public class PreLoginRepl {
                 System.out.print(result);
                 if (Objects.equals(result, "register success\n") || Objects.equals(result, "login success\n")){
                     System.out.print("you are logged in\n\n");
-                    PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl);
+                    PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl,client.getAuthData());
                     boolean returnToPre = postLoginRepl.run();
 
                     if (returnToPre) {
                         System.out.print("Returned to Login Menu\n");
                         System.out.println(client.help());
                     }
+                }
+                else{
+                    System.out.println(client.help());
                 }
             } catch (Throwable e) {
                 var msg = e.toString();
