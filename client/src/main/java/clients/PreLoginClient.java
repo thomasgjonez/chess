@@ -46,7 +46,19 @@ public class PreLoginClient {
     }
 
     public String login(String... params){
-        return "login success\n";
+        if(params.length < 2){
+            System.out.println("Need username and password");
+            return "login failed\n";
+        }
+        String username = params[0];
+        String password = params[1];
+
+        try {
+            this.authData = serverFacade.login(username, password);
+            return "login success\n";
+        } catch (ResponseException e) {
+            return "login failed- " + e.getMessage() + "\n";
+        }
     }
 
     public String help() {
