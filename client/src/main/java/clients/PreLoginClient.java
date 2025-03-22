@@ -36,12 +36,13 @@ public class PreLoginClient {
         String username = params[0];
         String password = params[1];
         String email = params [2];
-        System.out.println(username);
-        System.out.println(password);
-        System.out.println(email);
-        this.authData = serverFacade.register(username, password, email);
 
-        return "register success\n";
+        try {
+            this.authData = serverFacade.register(username, password, email);
+            return "register success\n";
+        } catch (ResponseException e) {
+            return "register failed- " + e.getMessage() + "\n";
+        }
     }
 
     public String login(String... params){

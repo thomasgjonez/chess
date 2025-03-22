@@ -1,9 +1,11 @@
 package net;
 
 import com.google.gson.Gson;
+import model.ApiResponse;
 
 import java.io.*;
 import java.net.*;
+import java.util.stream.Collectors;
 
 public class HTTPConnection {
     private final String serverUrl;
@@ -42,15 +44,19 @@ public class HTTPConnection {
     }
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
-        var status = http.getResponseCode();
+        int status = http.getResponseCode();
+        System.out.println("HTTP Status Code: " + status);
+
         if (!isSuccessful(status)) {
             try (InputStream respErr = http.getErrorStream()) {
                 if (respErr != null) {
-                    throw ResponseException.fromJson(respErr);
+                    InputStreamReader reader = new InputStreamReader(respErr);
+                    ApiResponse apiError = new Gson().fromJson(reader, ApiResponse.class);
+                    throw new ResponseException(status, apiError.message());
                 }
             }
 
-            throw new ResponseException(status, "other failure: " + status);
+            throw new ResponseException(status, "Other failure: " + status);
         }
     }
 
