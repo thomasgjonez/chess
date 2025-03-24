@@ -22,11 +22,11 @@ public class PostLoginClient {
     }
 
     public String eval(String input) {
-        var tokens = input.toLowerCase().split(" ");
-        var cmd = (tokens.length > 0) ? tokens[0] : "help";
+        var tokens = input.strip().split(" ");
+        var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
-            case "create " -> createGame(params);
+            case "create" -> createGame(params);
             case "list" -> listGames();
             case "join" -> joinGame(params);
             case "observe" -> observeGame(params);
@@ -38,11 +38,14 @@ public class PostLoginClient {
 
     public String createGame(String... params){
         String gameName = params[0];
-
+        System.out.println(gameName);
         try {
             CreateResult res = serverFacade.createGame(gameName, authData.authToken());
             String gameId = res.gameID();
-            return "create game success. The gameID is "+ gameId + "\n";//set gameId to blue?
+            return "create game success. The gameID is " +
+                    EscapeSequences.SET_TEXT_COLOR_BLUE +
+                    gameId +
+                    EscapeSequences.RESET_TEXT_COLOR + "\n";
         } catch (ResponseException e) {
             return "create game failed- " + e.getMessage() + "\n";
         }

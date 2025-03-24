@@ -35,9 +35,9 @@ public class PostLoginRepl {
                 if (Objects.equals(result, "join success\n") || Objects.equals(result, "observe success\n")){
                     System.out.print("joining game...\n\n");
                     GameRepl gameRepl = new GameRepl(serverUrl);
-                    boolean returnToPost = gameRepl.run();
+                    boolean returnedToPost = gameRepl.run();
 
-                    if (returnToPost) {
+                    if (returnedToPost) {
                         System.out.print("Returned to Game Menu\n");
                         System.out.println(client.help());
                     }
@@ -45,6 +45,7 @@ public class PostLoginRepl {
                 if (Objects.equals(result, "logout success\n")){
                     return true;//returns to preloginRepl
                 }
+                client.help();
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
