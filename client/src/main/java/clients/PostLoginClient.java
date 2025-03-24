@@ -62,11 +62,12 @@ public class PostLoginClient {
     }
 
     public String joinGame(String... params) {
-        String playerColor = params[0].toUpperCase();
-        String gameId = params[1];
+        String gameId = params[0];
+        String playerColor = params[1].toUpperCase();
+
         try {
             GameData res = serverFacade.joinGame(playerColor, gameId, authData.authToken());
-            return "join game success";
+            return "join game success\n";
         } catch (ResponseException e) {
             return "join game failed- " + e.getMessage() + "\n";
         }
