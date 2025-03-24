@@ -1,6 +1,10 @@
 package clients;
 
 import model.AuthData;
+import model.CreateResult;
+import model.GameData;
+import model.ListGamesResult;
+import net.ResponseException;
 import net.ServerFacade;
 import ui.EscapeSequences;
 import ui.PreLoginRepl;
@@ -33,15 +37,36 @@ public class PostLoginClient {
     }
 
     public String createGame(String... params){
-        return "createGame was called";
+        String gameName = params[0];
+
+        try {
+            CreateResult res = serverFacade.createGame(gameName);
+            String gameId = res.gameID();
+            return "create game success. The gameID is "+ gameId + "\n";//set gameId to blue?
+        } catch (ResponseException e) {
+            return "create game failed- " + e.getMessage() + "\n";
+        }
     }
 
-    public String listGames(String... params){
-        return "listGames was called";
+    public String listGames(){
+        try {
+            ListGamesResult res = serverFacade.listGames();
+            //res will be an array
+            return "ListGame success\n";
+        } catch (ResponseException e) {
+            return "list game failed- " + e.getMessage() + "\n";
+        }
     }
 
-    public String joinGame(String... params){
-        return "join success\n";
+    public String joinGame(String... params) {
+        String playerColor = params[0];
+        String gameId = params[1];
+        try {
+            GameData res = serverFacade.joinGame(playerColor, gameId);
+            return "join game success";
+        } catch (ResponseException e) {
+            return "join game failed- " + e.getMessage() + "\n";
+        }
     }
 
     public String observeGame(String... params){

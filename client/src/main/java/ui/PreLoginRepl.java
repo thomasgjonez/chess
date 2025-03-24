@@ -27,7 +27,7 @@ public class PreLoginRepl {
                 result = client.eval(line);
                 System.out.print(result);
                 if (Objects.equals(result, "register success\n") || Objects.equals(result, "login success\n")){
-                    System.out.print("you are logged in\n\n");
+                    //System.out.print("you are logged in\n\n");
                     PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl,client.getAuthData());
                     boolean returnToPre = postLoginRepl.run();
 
