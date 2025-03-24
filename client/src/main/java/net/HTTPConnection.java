@@ -14,12 +14,13 @@ public class HTTPConnection {
         this.serverUrl = serverUrl;
     }
 
-    public <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    public <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+            http.setRequestProperty("Authorization", authToken);
 
             writeBody(request, http);
             http.connect();

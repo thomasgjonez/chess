@@ -42,6 +42,9 @@ public class PostLoginRepl {
                         System.out.println(client.help());
                     }
                 }
+                if (Objects.equals(result, "logout success\n")){
+                    return true;//returns to preloginRepl
+                }
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);

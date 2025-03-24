@@ -11,7 +11,7 @@ public class ServerFacade {
     public ServerFacade(String serverUrl) {
         this.http = new HTTPConnection(serverUrl);
     }
-    //Auth Section
+
     public AuthData register(String username, String password, String email) throws ResponseException {
         return http.makeRequest("POST", "/user", new UserData(username,password,email), AuthData.class);
     }
@@ -35,4 +35,7 @@ public class ServerFacade {
         return http.makeRequest("PUT", "/game", new JoinGameRequest(color, gameID), GameData.class);
     }
 
+    public void logout(String authToken) throws ResponseException{
+        http.makeRequest("DELETE", "/session", null, null);
+    }
 }

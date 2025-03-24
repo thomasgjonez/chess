@@ -30,7 +30,7 @@ public class PostLoginClient {
             case "list" -> listGames();
             case "join" -> joinGame(params);
             case "observe" -> observeGame(params);
-            case "logout" -> logout(params);
+            case "logout" -> logout();
             case "quit" -> "quit";
             default -> help();
         };
@@ -70,11 +70,18 @@ public class PostLoginClient {
     }
 
     public String observeGame(String... params){
+        // do nothing for right now, maybe I'll just have a variable that stores the GameState and observe Game just fetches that gameState
         return "observe success\n";
     }
 
-    public String logout(String... params){
-        return "logout was called";
+    public String logout(){
+        try {
+            serverFacade.logout(authData.authToken());
+            authData = null;
+            return "logout success\n";
+        } catch (ResponseException e) {
+            return "join game failed- " + e.getMessage() + "\n";
+        }
     }
 
 
