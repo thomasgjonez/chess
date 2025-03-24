@@ -1,6 +1,9 @@
 package net;
 
+import chess.ChessGame;
 import model.*;
+
+import java.util.Objects;
 
 public class ServerFacade {
     private final HTTPConnection http;
@@ -26,7 +29,10 @@ public class ServerFacade {
         return http.makeRequest("GET", "/game", "", ListGamesResult.class);
     }
 
-    public GameData joinGame() throws ResponseException{
+    public GameData joinGame(String playerColor, String gameID) throws ResponseException{
+        ChessGame.TeamColor color = (Objects.equals(playerColor, "WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
 
+        return http.makeRequest("PUT", "/game", new JoinGameRequest(color, gameID), GameData.class);
     }
+
 }

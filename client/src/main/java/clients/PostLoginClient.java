@@ -59,7 +59,7 @@ public class PostLoginClient {
     }
 
     public String joinGame(String... params) {
-        String playerColor = params[0];
+        String playerColor = params[0].toUpperCase();
         String gameId = params[1];
         try {
             GameData res = serverFacade.joinGame(playerColor, gameId);
