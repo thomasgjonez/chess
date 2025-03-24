@@ -40,7 +40,7 @@ public class PostLoginClient {
         String gameName = params[0];
 
         try {
-            CreateResult res = serverFacade.createGame(gameName);
+            CreateResult res = serverFacade.createGame(gameName, authData.authToken());
             String gameId = res.gameID();
             return "create game success. The gameID is "+ gameId + "\n";//set gameId to blue?
         } catch (ResponseException e) {
@@ -50,7 +50,7 @@ public class PostLoginClient {
 
     public String listGames(){
         try {
-            ListGamesResult res = serverFacade.listGames();
+            ListGamesResult res = serverFacade.listGames(authData.authToken());
             //res will be an array
             return "ListGame success\n";
         } catch (ResponseException e) {
@@ -62,7 +62,7 @@ public class PostLoginClient {
         String playerColor = params[0].toUpperCase();
         String gameId = params[1];
         try {
-            GameData res = serverFacade.joinGame(playerColor, gameId);
+            GameData res = serverFacade.joinGame(playerColor, gameId, authData.authToken());
             return "join game success";
         } catch (ResponseException e) {
             return "join game failed- " + e.getMessage() + "\n";
