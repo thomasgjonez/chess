@@ -1,5 +1,9 @@
 package client;
 
+import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
+import dataaccess.GameDAO;
+import dataaccess.UserDAO;
 import model.AuthData;
 import net.ResponseException;
 import org.junit.jupiter.api.*;
@@ -23,6 +27,14 @@ public class ServerFacadeTests {
         var serverUrl = "http://localhost:8080";
         serverFacade = new ServerFacade(serverUrl);
     }
+
+    @BeforeEach
+    public void clear() throws DataAccessException {
+        GameDAO.clear();
+        AuthDAO.clear();
+        UserDAO.clear();
+    }
+
     @Test
     void register() throws Exception {
         AuthData authData = serverFacade.register("player1", "password", "p1@email.com");
@@ -37,6 +49,24 @@ public class ServerFacadeTests {
 
         assertTrue(exception.getMessage().contains("bad request"));
 
+    }
+
+    @Test
+    void login() throws Exception {
+        serverFacade.register("player2", "password","p2@gmail.com");
+        AuthData authData = serverFacade.login("player2", "password");
+
+        assertTrue(authData.authToken().length() > 10);
+    }
+
+    @Test
+    void loginWithWrongPassword() throws Exception {
+        serverFacade.register("player2", "password","p2@gmail.com");
+        ResponseException exception = assertThrows(ResponseException.class, () -> {
+            serverFacade.login("player2", "wrongPassword");
+        });
+
+        assertTrue(exception.getMessage().contains("Error: unauthorized"));
     }
 
     @AfterAll
