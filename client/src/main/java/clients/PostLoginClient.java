@@ -7,13 +7,15 @@ import model.ListGamesResult;
 import net.ResponseException;
 import net.ServerFacade;
 import ui.EscapeSequences;
-import ui.PreLoginRepl;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PostLoginClient {
     private final ServerFacade serverFacade;
     private AuthData authData;
+    private final Map<Integer, GameData> gameIndexMap = new HashMap<>();
 
     public PostLoginClient(String serverUrl, AuthData authData) {
         this.serverFacade = new ServerFacade(serverUrl);
@@ -38,7 +40,7 @@ public class PostLoginClient {
 
     public String createGame(String... params){
         String gameName = params[0];
-        System.out.println(gameName);
+
         try {
             CreateResult res = serverFacade.createGame(gameName, authData.authToken());
             String gameId = res.gameID();
@@ -54,22 +56,68 @@ public class PostLoginClient {
     public String listGames(){
         try {
             ListGamesResult res = serverFacade.listGames(authData.authToken());
-            //res will be an array
-            return "ListGame success\n";
+            GameData[] games = res.games().toArray(new GameData[0]);
+
+            if (games.length == 0) {
+                return "No games found.\n";
+            }
+
+            gameIndexMap.clear();
+
+            StringBuilder output = new StringBuilder();
+            output.append(EscapeSequences.SET_TEXT_BOLD+"Current Games:"+ EscapeSequences.RESET_TEXT_BOLD_FAINT +"\n");
+
+            for (int i = 0; i < games.length; i++) {
+                int displayIndex = i + 1;
+                GameData game = games[i];
+                gameIndexMap.put(displayIndex, game);
+                output.append(String.format(
+                        "%d. %sGAME NAME%s: %s\n", i + 1,
+                        EscapeSequences.SET_TEXT_COLOR_BLUE, EscapeSequences.RESET_TEXT_COLOR,
+                        game.gameName()
+                ));
+
+                output.append(String.format(
+                        "   %sWHITE%s: %s\n",
+                        EscapeSequences.SET_TEXT_COLOR_MAGENTA, EscapeSequences.RESET_TEXT_COLOR,
+                        game.whiteUsername() != null ? game.whiteUsername() : "N/A"
+                ));
+
+                output.append(String.format(
+                        "   %sBLACK%s: %s\n",
+                        EscapeSequences.SET_TEXT_COLOR_MAGENTA, EscapeSequences.RESET_TEXT_COLOR,
+                        game.blackUsername() != null ? game.blackUsername() : "N/A"
+                ));
+            }
+
+            return output.toString();
         } catch (ResponseException e) {
             return "list game failed- " + e.getMessage() + "\n";
         }
     }
 
     public String joinGame(String... params) {
-        String gameId = params[0];
-        String playerColor = params[1].toUpperCase();
+        if (params.length < 2) {
+            return "Use: join <NUMBER> <WHITE|BLACK>\n";
+        }
 
         try {
-            GameData res = serverFacade.joinGame(playerColor, gameId, authData.authToken());
+            int index = Integer.parseInt(params[0]); // from user input
+            String color = params[1].toUpperCase();
+
+            GameData game = gameIndexMap.get(index);
+            if (game == null) {
+                return "Invalid game number.\n";
+            }
+
+            String gameId = game.gameID().toString();
+            GameData result = serverFacade.joinGame(color, gameId, authData.authToken());
             return "join game success\n";
+
+        } catch (NumberFormatException e) {
+            return "Invalid index: must be a number.\n";
         } catch (ResponseException e) {
-            return "join game failed- " + e.getMessage() + "\n";
+            return "join game failed - " + e.getMessage() + "\n";
         }
     }
 
@@ -92,7 +140,7 @@ public class PostLoginClient {
     public String help() {
         return "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Create" + EscapeSequences.RESET_TEXT_COLOR +
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +
-                " " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_BLUE + "<NAME>" +
+                " " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_BLUE + "<GAME NAME>" +
                 EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.RESET_TEXT_BOLD_FAINT +
                 " - to create an a chess game\n" +
 
@@ -116,10 +164,6 @@ public class PostLoginClient {
                 "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Logout" + EscapeSequences.RESET_TEXT_COLOR +
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +
                 " - to logout \n" +
-
-                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Quit" + EscapeSequences.RESET_TEXT_COLOR +
-                EscapeSequences.RESET_TEXT_BOLD_FAINT +
-                " - exit game menu\n" +
 
                 "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Help" + EscapeSequences.RESET_TEXT_COLOR +
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +

@@ -25,8 +25,7 @@ public class ServerFacade {
     }
 
     public ListGamesResult listGames(String authToken) throws ResponseException{
-        //double check ListGamesRequest
-        return http.makeRequest("GET", "/game", "", ListGamesResult.class, authToken);
+        return http.makeRequest("GET", "/game", null, ListGamesResult.class, authToken);
     }
 
     public GameData joinGame(String playerColor, String gameID, String authToken) throws ResponseException{
