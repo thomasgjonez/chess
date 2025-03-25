@@ -5,6 +5,8 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.AuthData;
+import model.CreateResult;
+import model.GameData;
 import net.ResponseException;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -128,6 +130,26 @@ public class ServerFacadeTests {
     }
 
     @Test
+    void joinGame() throws Exception{
+        AuthData authData = serverFacade.register("player1", "password", "p1@gamil.com");
+        CreateResult game = serverFacade.createGame("gameName",authData.authToken());
+
+        assertDoesNotThrow(() -> {
+            serverFacade.joinGame("WHITE", game.gameID(), authData.authToken());
+        });
+
+    }
+
+    @Test
+    void joinGameWithNoGameID() throws Exception {
+        AuthData authData = serverFacade.register("noColorUser", "password", "noColor@example.com");
+
+        ResponseException exception = assertThrows(ResponseException.class, () -> {
+            serverFacade.joinGame("WHITE", null, authData.authToken());
+        });
+
+        assertTrue(exception.getMessage().toLowerCase().contains("bad request"));
+    }
 
     @AfterAll
     static void stopServer() {
