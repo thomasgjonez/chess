@@ -112,7 +112,7 @@ public class PostLoginClient {
             if (!color.equals("WHITE") && !color.equals("BLACK")) {
                 return "Join game failed - color must be " + EscapeSequences.SET_TEXT_COLOR_MAGENTA +
                 "WHITE" + EscapeSequences.RESET_TEXT_COLOR + " or " + EscapeSequences.SET_TEXT_COLOR_MAGENTA+
-                        "BLACK.\n" + EscapeSequences.RESET_TEXT_COLOR;
+                        "BLACK\n" + EscapeSequences.RESET_TEXT_COLOR;
             }
 
             GameData game = gameIndexMap.get(index);

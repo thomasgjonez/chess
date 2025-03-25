@@ -42,7 +42,7 @@ public class PreLoginRepl {
                 System.out.print(msg);
             }
         }
-        System.out.println();
+        System.out.println("\nThanks for playing!");
     }
 
 }

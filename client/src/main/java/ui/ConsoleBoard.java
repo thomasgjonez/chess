@@ -61,9 +61,9 @@ public class ConsoleBoard {
 
     private void printSquare(PrintStream out, ChessPiece piece, boolean isLightSquare) {
         String bgColor = isLightSquare ? SET_BG_COLOR_WHITE : SET_BG_COLOR_LIGHT_GREY;
-        String symbol = (piece != null) ? getSymbol(piece) : " ";
+        String symbol = (piece != null) ? getSymbol(piece) : EMPTY;
         out.print(bgColor + SET_TEXT_COLOR_BLACK);
-        out.print(" " + symbol + " ");
+        out.print(symbol);
         out.print(RESET_BG_COLOR);
     }
 
