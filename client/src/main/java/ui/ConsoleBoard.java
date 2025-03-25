@@ -24,8 +24,8 @@ public class ConsoleBoard {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
 
-        int[] rowRange = (playerColor == ChessGame.TeamColor.WHITE) ? rangeDescending(1, 8) : rangeAscending(1, 8);
-        int[] colRange = (playerColor == ChessGame.TeamColor.WHITE) ? rangeAscending(1, 8) : rangeDescending(1, 8);
+        int[] rowRange = (playerColor == ChessGame.TeamColor.WHITE) ? rangeDescending() : rangeAscending();
+        int[] colRange = (playerColor == ChessGame.TeamColor.WHITE) ? rangeAscending() : rangeDescending();
 
         // Print top column labels with black background
         out.print(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE + "   ");
@@ -41,8 +41,8 @@ public class ConsoleBoard {
             for (int col : colRange) {
                 ChessPosition pos = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(pos);
-                boolean isLightSquare = (row + col) % 2 != 0;// With the way the index is set up you have to do the opposite lol
-                printSquare(out, piece, isLightSquare);
+                boolean isDarkSquare = (row + col) % 2 == 0;
+                printSquare(out, piece, isDarkSquare);
             }
 
             // Print right row label with black background
@@ -59,8 +59,8 @@ public class ConsoleBoard {
     }
 
 
-    private void printSquare(PrintStream out, ChessPiece piece, boolean isLightSquare) {
-        String bgColor = isLightSquare ? SET_BG_COLOR_WHITE : SET_BG_COLOR_LIGHT_GREY;
+    private void printSquare(PrintStream out, ChessPiece piece, boolean isDarkSquare) {
+        String bgColor = isDarkSquare ? SET_BG_COLOR_LIGHT_GREY : SET_BG_COLOR_WHITE;
         String symbol = (piece != null) ? getSymbol(piece) : EMPTY;
         out.print(bgColor + SET_TEXT_COLOR_BLACK);
         out.print(symbol);
@@ -78,15 +78,15 @@ public class ConsoleBoard {
         };
     }
 
-    private int[] rangeAscending(int start, int end) {
-        int[] range = new int[end - start + 1];
-        for (int i = 0; i < range.length; i++) range[i] = start + i;
+    private int[] rangeAscending() {
+        int[] range = new int[8];
+        for (int i = 0; i < range.length; i++) range[i] = 1 + i;
         return range;
     }
 
-    private int[] rangeDescending(int start, int end) {
-        int[] range = new int[end - start + 1];
-        for (int i = 0; i < range.length; i++) range[i] = end - i;
+    private int[] rangeDescending() {
+        int[] range = new int[8];
+        for (int i = 0; i < range.length; i++) range[i] = 8 - i;
         return range;
     }
 }
