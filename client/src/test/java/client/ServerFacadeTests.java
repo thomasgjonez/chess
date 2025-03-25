@@ -108,6 +108,27 @@ public class ServerFacadeTests {
 
     }
 
+    @Test
+    void listGames() throws Exception{
+        AuthData authData = serverFacade.register("player1","password","p1@gmail.com");
+
+        assertDoesNotThrow(() -> serverFacade.listGames(authData.authToken()));
+
+    }
+
+    @Test
+    void listGamesWithInvalidAuth() throws Exception{
+        String invalidToken = "InvalidToken";
+
+        ResponseException exception = assertThrows(ResponseException.class, () -> {
+            serverFacade.listGames(invalidToken);
+        });
+
+        assertTrue(exception.getMessage().contains("Error: unauthorized"));
+    }
+
+    @Test
+
     @AfterAll
     static void stopServer() {
         server.stop();
