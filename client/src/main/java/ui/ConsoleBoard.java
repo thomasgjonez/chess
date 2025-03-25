@@ -80,13 +80,17 @@ public class ConsoleBoard {
 
     private int[] rangeAscending() {
         int[] range = new int[8];
-        for (int i = 0; i < range.length; i++) range[i] = 1 + i;
+        for (int i = 0; i < range.length; i++){
+            range[i] = 1 + i;
+        }
         return range;
     }
 
     private int[] rangeDescending() {
         int[] range = new int[8];
-        for (int i = 0; i < range.length; i++) range[i] = 8 - i;
+        for (int i = 0; i < range.length; i++){
+            range[i] = 8 - i;
+        }
         return range;
     }
 }
