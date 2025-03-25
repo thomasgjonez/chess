@@ -30,8 +30,8 @@ public class PreLoginClient {
         // error handling for register/ don't have enough args or do I pass on the error messages from the actual server?
         //make params an object
         if(params.length < 3){
-            System.out.println("Need username, password, and email");
-            return "register failed\n";
+            return "Register failed- missing required fields: " + EscapeSequences.SET_TEXT_COLOR_BLUE +
+                    "<USERNAME> <PASSWORD> <EMAIL>\n" + EscapeSequences.RESET_TEXT_COLOR;
         }
         String username = params[0];
         String password = params[1];
@@ -47,8 +47,8 @@ public class PreLoginClient {
 
     public String login(String... params){
         if(params.length < 2){
-            System.out.println("Need username and password");
-            return "login failed\n";
+            return "Login failed- missing required fields: " + EscapeSequences.SET_TEXT_COLOR_BLUE +
+                    "<USERNAME> <PASSWORD>\n" + EscapeSequences.RESET_TEXT_COLOR;
         }
         String username = params[0];
         String password = params[1];

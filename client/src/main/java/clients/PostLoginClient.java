@@ -1,7 +1,6 @@
 package clients;
 
 import model.AuthData;
-import model.CreateResult;
 import model.GameData;
 import model.ListGamesResult;
 import net.ResponseException;
@@ -39,15 +38,16 @@ public class PostLoginClient {
     }
 
     public String createGame(String... params){
+        if (params.length < 1 || params[0].isBlank()) {
+            return "Create game failed - missing required field: " + EscapeSequences.SET_TEXT_COLOR_BLUE +
+                    "<GAME NAME>\n" + EscapeSequences.RESET_TEXT_COLOR;
+        }
+
         String gameName = params[0];
 
         try {
-            CreateResult res = serverFacade.createGame(gameName, authData.authToken());
-            String gameId = res.gameID();
-            return "create game success. The gameID is " +
-                    EscapeSequences.SET_TEXT_COLOR_BLUE +
-                    gameId +
-                    EscapeSequences.RESET_TEXT_COLOR + "\n";
+            serverFacade.createGame(gameName, authData.authToken());
+            return "create game success\n";
         } catch (ResponseException e) {
             return "create game failed- " + e.getMessage() + "\n";
         }
@@ -98,16 +98,26 @@ public class PostLoginClient {
 
     public String joinGame(String... params) {
         if (params.length < 2) {
-            return "Use: join <NUMBER> <WHITE|BLACK>\n";
+            return "Join game failed - missing required fields: " +
+                    EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> " +
+                    EscapeSequences.SET_TEXT_COLOR_MAGENTA +
+                    "WHITE" + EscapeSequences.RESET_TEXT_COLOR + " or " + EscapeSequences.SET_TEXT_COLOR_MAGENTA+
+                    "BLACK.\n" + EscapeSequences.RESET_TEXT_COLOR;
         }
 
         try {
             int index = Integer.parseInt(params[0]); // from user input
             String color = params[1].toUpperCase();
 
+            if (!color.equals("WHITE") && !color.equals("BLACK")) {
+                return "Join game failed - color must be " + EscapeSequences.SET_TEXT_COLOR_MAGENTA +
+                "WHITE" + EscapeSequences.RESET_TEXT_COLOR + " or " + EscapeSequences.SET_TEXT_COLOR_MAGENTA+
+                        "BLACK.\n" + EscapeSequences.RESET_TEXT_COLOR;
+            }
+
             GameData game = gameIndexMap.get(index);
             if (game == null) {
-                return "Invalid game number.\n";
+                return "Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID>\n" + EscapeSequences.RESET_TEXT_COLOR;
             }
 
             String gameId = game.gameID().toString();
@@ -115,7 +125,7 @@ public class PostLoginClient {
             return "join game success\n";
 
         } catch (NumberFormatException e) {
-            return "Invalid index: must be a number.\n";
+            return "Invalid index: ID must be a number from the games list.\n";
         } catch (ResponseException e) {
             return "join game failed - " + e.getMessage() + "\n";
         }

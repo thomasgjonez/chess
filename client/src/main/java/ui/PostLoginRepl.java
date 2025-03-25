@@ -32,7 +32,7 @@ public class PostLoginRepl {
                 result = client.eval(line);
                 System.out.print(result);
 
-                if (Objects.equals(result, "join success\n") || Objects.equals(result, "observe success\n")){
+                if (Objects.equals(result, "join game success\n") || Objects.equals(result, "observe success\n")){
                     System.out.print("joining game...\n\n");
                     GameRepl gameRepl = new GameRepl(serverUrl);
                     boolean returnedToPost = gameRepl.run();
@@ -45,7 +45,7 @@ public class PostLoginRepl {
                 if (Objects.equals(result, "logout success\n")){
                     return true;//returns to preloginRepl
                 }
-                client.help();
+
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);

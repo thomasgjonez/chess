@@ -36,9 +36,7 @@ public class PreLoginRepl {
                         System.out.println(client.help());
                     }
                 }
-                else{
-                    System.out.println(client.help());
-                }
+
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
