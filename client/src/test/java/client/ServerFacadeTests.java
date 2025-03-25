@@ -76,6 +76,7 @@ public class ServerFacadeTests {
         assertDoesNotThrow(() -> serverFacade.logout(authData.authToken()));
     }
 
+
     @Test
     void logoutWithInvalidAuthToken() throws Exception{
         String invalidToken = "InvalidToken";
@@ -85,6 +86,26 @@ public class ServerFacadeTests {
         });
 
         assertTrue(exception.getMessage().contains("Error: unauthorized"));
+    }
+
+    @Test
+    void createGame() throws Exception {
+        AuthData authData = serverFacade.register("player1", "password", "p1@gamil.com");
+
+        assertDoesNotThrow(() -> serverFacade.createGame("gameName",authData.authToken()));
+    }
+
+    @Test
+    void createGameWithNullForName() throws Exception{
+        AuthData authData = serverFacade.register("player1", "password", "p1@gamil.com");
+
+        ResponseException exception = assertThrows(ResponseException.class, () -> {
+            serverFacade.createGame(null, authData.authToken());
+        });
+
+        assertTrue(exception.getMessage().contains("bad request"));
+
+
     }
 
     @AfterAll
