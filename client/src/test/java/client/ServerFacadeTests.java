@@ -69,6 +69,24 @@ public class ServerFacadeTests {
         assertTrue(exception.getMessage().contains("Error: unauthorized"));
     }
 
+    @Test
+    void logout() throws Exception {
+        AuthData authData = serverFacade.register("player1", "password", "p1@gamil.com");
+
+        assertDoesNotThrow(() -> serverFacade.logout(authData.authToken()));
+    }
+
+    @Test
+    void logoutWithInvalidAuthToken() throws Exception{
+        String invalidToken = "InvalidToken";
+
+        ResponseException exception = assertThrows(ResponseException.class, () -> {
+            serverFacade.logout(invalidToken);
+        });
+
+        assertTrue(exception.getMessage().contains("Error: unauthorized"));
+    }
+
     @AfterAll
     static void stopServer() {
         server.stop();
