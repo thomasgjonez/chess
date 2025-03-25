@@ -133,7 +133,7 @@ public class PostLoginClient {
 
     public String observeGame(String... params){
         // do nothing for right now, maybe I'll just have a variable that stores the GameState and observe Game just fetches that gameState
-        return "observe success:" + "white\n";//default will be white
+        return "observe game success: " + "white\n";//default will be white
     }
 
     public String logout(){
