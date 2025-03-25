@@ -131,9 +131,21 @@ public class PostLoginClient {
         }
     }
 
-    public String observeGame(String... params){
+    public String observeGame(String... params) throws ResponseException {
         // do nothing for right now, maybe I'll just have a variable that stores the GameState and observe Game just fetches that gameState
-        return "observe game success: " + "white\n";//default will be white
+        try {
+            int index = Integer.parseInt(params[0]);
+            GameData game = gameIndexMap.get(index);
+
+            if (game == null) {
+                return "Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID>\n" + EscapeSequences.RESET_TEXT_COLOR;
+            }
+
+            return "observe game success: " + "white\n"; //default will be white
+
+        } catch (NumberFormatException e) {
+            return "Invalid index: ID must be a number from the games list.\n";
+        }
     }
 
     public String logout(){
