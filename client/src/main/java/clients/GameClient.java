@@ -7,7 +7,9 @@ import ui.ConsoleBoard;
 import java.util.Arrays;
 
 public class GameClient {
-    public GameClient(String serverUrl){
+    private String playerColor;
+    public GameClient(String serverUrl, String playerColor){
+        this.playerColor = playerColor;
     }
 
     public String eval(String input) {
@@ -22,9 +24,11 @@ public class GameClient {
     }
     public void printGame(){
         //maybe I should just get the actual ChessGame instance, which will have everything i need, but I'll do that phase 6
-        ChessBoard board = new ChessBoard();
+        ChessBoard board = new ChessBoard();// will need to change in the future probs
         board.resetBoard();//this sets the game board up
-        ConsoleBoard game = new ConsoleBoard(board, ChessGame.TeamColor.WHITE);
+
+        ChessGame.TeamColor color = (playerColor.toUpperCase().equals("WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+        ConsoleBoard game = new ConsoleBoard(board, color);
         game.renderBoard();
     }
 

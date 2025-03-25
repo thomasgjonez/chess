@@ -11,9 +11,9 @@ public class GameRepl {
     private final GameClient client;
     private final String serverUrl;
 
-    public GameRepl(String serverUrl){
+    public GameRepl(String serverUrl, String playerColor){
         this.serverUrl = serverUrl;
-        this.client = new GameClient(serverUrl);
+        this.client = new GameClient(serverUrl, playerColor);
     }
 
     public boolean run() {

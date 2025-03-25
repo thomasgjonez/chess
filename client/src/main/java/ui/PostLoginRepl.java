@@ -32,9 +32,13 @@ public class PostLoginRepl {
                 result = client.eval(line);
                 System.out.print(result);
 
-                if (Objects.equals(result, "join game success\n") || Objects.equals(result, "observe success\n")){
+                if (result.startsWith("join game success") || result.startsWith("observe game success")){
                     System.out.print("joining game...\n\n");
-                    GameRepl gameRepl = new GameRepl(serverUrl);
+                    //gets player color to pass to GameRepl
+                    String[] parts = result.split(":");
+                    String playerColor = parts.length > 1 ? parts[1].trim() : null;
+
+                    GameRepl gameRepl = new GameRepl(serverUrl, playerColor);
                     boolean returnedToPost = gameRepl.run();
 
                     if (returnedToPost) {

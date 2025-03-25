@@ -122,7 +122,7 @@ public class PostLoginClient {
 
             String gameId = game.gameID().toString();
             GameData result = serverFacade.joinGame(color, gameId, authData.authToken());
-            return "join game success\n";
+            return "join game success:" + color + "\n";
 
         } catch (NumberFormatException e) {
             return "Invalid index: ID must be a number from the games list.\n";
@@ -133,7 +133,7 @@ public class PostLoginClient {
 
     public String observeGame(String... params){
         // do nothing for right now, maybe I'll just have a variable that stores the GameState and observe Game just fetches that gameState
-        return "observe success\n";
+        return "observe success:" + "white\n";//default will be white
     }
 
     public String logout(){

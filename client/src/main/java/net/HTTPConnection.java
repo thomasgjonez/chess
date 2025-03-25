@@ -46,7 +46,7 @@ public class HTTPConnection {
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         int status = http.getResponseCode();
-        System.out.println("HTTP Status Code: " + status);
+        //System.out.println("HTTP Status Code: " + status);
 
         if (!isSuccessful(status)) {
             try (InputStream respErr = http.getErrorStream()) {
