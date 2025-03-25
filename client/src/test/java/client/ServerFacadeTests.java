@@ -1,11 +1,12 @@
 package client;
 
 import model.AuthData;
+import net.ResponseException;
 import org.junit.jupiter.api.*;
 import server.Server;
 import net.ServerFacade;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ServerFacadeTests {
@@ -26,6 +27,16 @@ public class ServerFacadeTests {
     void register() throws Exception {
         AuthData authData = serverFacade.register("player1", "password", "p1@email.com");
         assertTrue(authData.authToken().length() > 10);
+    }
+
+    @Test
+    void registerWithNoUsername() throws Exception{
+        ResponseException exception = assertThrows(ResponseException.class, () -> {
+            serverFacade.register(null, "password", "email@example.com");
+        });
+
+        assertTrue(exception.getMessage().contains("bad request"));
+
     }
 
     @AfterAll
