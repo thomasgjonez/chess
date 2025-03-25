@@ -22,7 +22,7 @@ public class PostLoginClient {
 
     }
 
-    public String eval(String input) {
+    public String eval(String input) throws ResponseException {
         var tokens = input.strip().split(" ");
         var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
@@ -117,7 +117,8 @@ public class PostLoginClient {
 
             GameData game = gameIndexMap.get(index);
             if (game == null) {
-                return "Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID>\n" + EscapeSequences.RESET_TEXT_COLOR;
+                return "Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> " + EscapeSequences.RESET_TEXT_COLOR +
+                        "- number must be from the games list\n";
             }
 
             String gameId = game.gameID().toString();
@@ -125,7 +126,8 @@ public class PostLoginClient {
             return "join game success:" + color + "\n";
 
         } catch (NumberFormatException e) {
-            return "Invalid index: ID must be a number from the games list.\n";
+            return "Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> " + EscapeSequences.RESET_TEXT_COLOR +
+                    "- number must be from the games list\n";
         } catch (ResponseException e) {
             return "join game failed - " + e.getMessage() + "\n";
         }
@@ -133,18 +135,26 @@ public class PostLoginClient {
 
     public String observeGame(String... params) throws ResponseException {
         // do nothing for right now, maybe I'll just have a variable that stores the GameState and observe Game just fetches that gameState
+        if (params.length < 1) {
+            return "Observe game failed - missing required field: " +
+                    EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> \n" +
+                    EscapeSequences.RESET_TEXT_COLOR;
+        }
+
         try {
             int index = Integer.parseInt(params[0]);
             GameData game = gameIndexMap.get(index);
 
             if (game == null) {
-                return "Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID>\n" + EscapeSequences.RESET_TEXT_COLOR;
+                return "Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> " + EscapeSequences.RESET_TEXT_COLOR +
+                        "- number must be from the games list\n";
             }
 
             return "observe game success: " + "white\n"; //default will be white
 
         } catch (NumberFormatException e) {
-            return "Invalid index: ID must be a number from the games list.\n";
+            return "Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> - " + EscapeSequences.RESET_TEXT_COLOR +
+                    "number must be from the games list\n";
         }
     }
 
