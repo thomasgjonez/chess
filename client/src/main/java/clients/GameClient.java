@@ -18,7 +18,7 @@ public class GameClient {
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
             //will add in more commands in phase 6, I think
-            case "quit" -> "quit";
+            case "leave" -> "leave";
             default -> help();
         };
     }
@@ -33,7 +33,19 @@ public class GameClient {
     }
 
     public String help(){
-        return  "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Quit" + EscapeSequences.RESET_TEXT_COLOR +
+        return  "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Redraw" + EscapeSequences.RESET_TEXT_COLOR +
+                EscapeSequences.RESET_TEXT_BOLD_FAINT +
+                " - redraw chess board\n" +
+
+                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Move" + EscapeSequences.SET_TEXT_COLOR_BLUE +
+                " <PIECEPOS> <TARGETPOS>" + EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.RESET_TEXT_BOLD_FAINT +
+                " - make a move from piece position to target position\n" +
+
+                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Resign" + EscapeSequences.RESET_TEXT_COLOR +
+                EscapeSequences.RESET_TEXT_BOLD_FAINT +
+                " - forfeit the game\n" +
+
+                "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Leave" + EscapeSequences.RESET_TEXT_COLOR +
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +
                 " - exit game\n" +
 

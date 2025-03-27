@@ -23,7 +23,7 @@ public class GameRepl {
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.equals("quit")) {
+        while (!result.equals("leave")) {
             String line = scanner.nextLine();
 
             try {
