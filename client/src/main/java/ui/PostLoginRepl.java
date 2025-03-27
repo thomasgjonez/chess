@@ -33,7 +33,6 @@ public class PostLoginRepl {
                 System.out.print(result);
 
                 if (result.startsWith("join game success") || result.startsWith("observe game success")){
-                    System.out.print("joining game...\n\n");
                     //gets player color to pass to GameRepl
                     String[] parts = result.split(":");
                     String playerColor = parts.length > 1 ? parts[1].trim() : null;
