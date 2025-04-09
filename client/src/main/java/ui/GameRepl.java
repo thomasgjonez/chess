@@ -11,7 +11,7 @@ public class GameRepl {
     private final GameClient client;
     private final String serverUrl;
 
-    public GameRepl(String serverUrl, String playerColor){
+    public GameRepl(String serverUrl, String playerColor) throws Exception {
         this.serverUrl = serverUrl;
         this.client = new GameClient(serverUrl, playerColor);
     }

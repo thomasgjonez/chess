@@ -2,14 +2,26 @@ package clients;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import ui.EscapeSequences;
 import ui.ConsoleBoard;
+import websocket.WebsocketCommunicator;
+import websocket.commands.UserGameCommand;
+
 import java.util.Arrays;
 
 public class GameClient {
     private String playerColor;
-    public GameClient(String serverUrl, String playerColor){
+    private WebsocketCommunicator socket;
+    private String authToken;
+    private int gameID;
+
+    public GameClient(String serverUrl, String playerColor) throws Exception {
         this.playerColor = playerColor;
+        this.authToken = authToken;
+        this.gameID = gameID;
+        this.socket = new WebsocketCommunicator(serverUrl);
     }
 
     public String eval(String input) {
@@ -17,16 +29,50 @@ public class GameClient {
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
-            //will add in more commands in phase 6, I think
-            case "leave" -> "leave";
-           // case "redraw" -> printGame();
-//            case "highlight" -> highlight();
-//            case "move" -> move();
-//            case " resign" -> resign();
+            case "leave" -> leave();
+            case "redraw" -> { printGame(); yield ""; }
+            case "highlight" -> highlight(params);
+            case "move" -> move(params);
+            case "resign" -> resign();
             default -> help();
         };
     }
 
+    public String leave(){
+        var command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+        socket.sendCommand(command);
+        return "leave";
+    }
+
+    private String resign() {
+        var command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+        socket.sendCommand(command);
+        return "You resigned the game.";
+    }
+
+    private String move(String[] params) {
+        if (params.length != 2) {
+            return "Usage: move <from> <to> (e.g. move e2 e4)";
+        }
+
+        try {
+            ChessPosition start = parsePosition(params[0]);
+            ChessPosition end = parsePosition(params[1]);
+            ChessMove move = new ChessMove(start, end, null); // Add promotion later if needed
+
+            var command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, move);
+            socket.sendCommand(command);
+
+            return "Move sent: " + params[0] + " to " + params[1];
+        } catch (Exception e) {
+            return "Invalid move format.";
+        }
+    }
+
+    private String highlight(String[] params){
+        //will need to return the array of possible moves, draw the board and while drawing highlight the appropriate ones
+        return "highlight was called";
+    }
 
     public void printGame(){
         //maybe I should just get the actual ChessGame instance, which will have everything i need, but I'll do that phase 6
@@ -64,5 +110,9 @@ public class GameClient {
                 " - list possible commands\n";
     }
 
-
+    private ChessPosition parsePosition(String pos) {
+        int col = pos.charAt(0) - 'a' + 1;
+        int row = Integer.parseInt(pos.substring(1));
+        return new ChessPosition(row, col);
+    }
 }
