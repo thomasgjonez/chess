@@ -19,6 +19,10 @@ public class GameClient {
         return switch (cmd) {
             //will add in more commands in phase 6, I think
             case "leave" -> "leave";
+            case "redraw" -> redraw();
+            case "highlight" -> highlight();
+            case "move" -> move();
+            case " resign" -> resign();
             default -> help();
         };
     }
