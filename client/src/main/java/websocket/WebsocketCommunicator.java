@@ -42,7 +42,7 @@ public class WebsocketCommunicator extends Endpoint {
 
     private void handleMessage(String message) {
         ServerMessage base = gson.fromJson(message, ServerMessage.class);
-        switch (base.serverMessageType) {
+        switch (base.getServerMessageType()) {
             case NOTIFICATION -> {
                 Notification notif = gson.fromJson(message, Notification.class);
             }
