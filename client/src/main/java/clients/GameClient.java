@@ -19,13 +19,15 @@ public class GameClient {
         return switch (cmd) {
             //will add in more commands in phase 6, I think
             case "leave" -> "leave";
-            case "redraw" -> redraw();
-            case "highlight" -> highlight();
-            case "move" -> move();
-            case " resign" -> resign();
+           // case "redraw" -> printGame();
+//            case "highlight" -> highlight();
+//            case "move" -> move();
+//            case " resign" -> resign();
             default -> help();
         };
     }
+
+
     public void printGame(){
         //maybe I should just get the actual ChessGame instance, which will have everything i need, but I'll do that phase 6
         ChessBoard board = new ChessBoard();// will need to change in the future probs
