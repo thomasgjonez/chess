@@ -32,7 +32,7 @@ public class WebSocketHandler extends BaseHandler{
                 }
                 case MAKE_MOVE -> {
                     MakeMoveCommand cmd = fromJson(message, MakeMoveCommand.class);
-                    //wsService.makeMove(session, cmd);
+                    wsService.makeMove(session, cmd);
                     System.out.println("MOVE called");
                 }
                 case LEAVE -> {
