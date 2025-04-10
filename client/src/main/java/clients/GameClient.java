@@ -11,21 +11,32 @@ import websocket.WebsocketCommunicator;
 import websocket.commands.*;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GameClient {
-    private String playerColor;
-    private WebsocketCommunicator socket;
-    private String authToken;
-    private int gameID;
+    private final String playerColor;
+    private final WebsocketCommunicator socket;
+    private final String authToken;
+    private final int gameID;
+    private ChessGame currentGame;
 
     public GameClient(String serverUrl, String playerColor, AuthData authData, Integer gameID) throws Exception {
         this.playerColor = playerColor;
         this.authToken = authData.authToken();
         this.gameID = gameID;
-        this.socket = new WebsocketCommunicator(serverUrl);
+        this.socket = new WebsocketCommunicator(serverUrl, this);
 
         var connect = new ConnectCommand(authToken, gameID);
         socket.sendCommand(connect);
+    }
+    public void setCurrentGame(ChessGame game) {
+        this.currentGame = game;
+    }
+
+    public ChessGame getCurrentGame() {
+        return this.currentGame;
     }
 
     public String eval(String input) {
@@ -72,7 +83,32 @@ public class GameClient {
 
     private String highlight(String[] params){
         //will need to return the array of possible moves, draw the board and while drawing highlight the appropriate ones
-        return "highlight was called";
+        if (params.length != 1) {
+            return "Usage: highlight <position> (e.g. highlight e2)\n";
+        }
+
+        try {
+            ChessPosition pos = parsePosition(params[0]);
+            Collection<ChessMove> legalMoves = currentGame.validMoves(pos);
+
+            if (legalMoves == null || legalMoves.isEmpty()) {
+                return "No legal moves for that piece.\n";
+            }
+
+            Set<ChessPosition> highlights = new HashSet<>();
+            for (ChessMove move : legalMoves) {
+                highlights.add(move.getEndPosition());
+            }
+
+
+            ChessGame.TeamColor color = (playerColor.equalsIgnoreCase("WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+            ConsoleBoard consoleBoard = new ConsoleBoard(currentGame.getBoard(), color);
+            //consoleBoard.renderBoard(pos, highlights);
+
+            return "";
+        } catch (IllegalArgumentException e) {
+            return "Invalid position format. Use something like e2.\n";
+        }
     }
 
     public void printGame(){
@@ -80,7 +116,7 @@ public class GameClient {
         ChessBoard board = new ChessBoard();// will need to change in the future probs
         board.resetBoard();//this sets the game board up
 
-        ChessGame.TeamColor color = (playerColor.toUpperCase().equals("WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+        ChessGame.TeamColor color = (playerColor.equalsIgnoreCase("WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
         ConsoleBoard game = new ConsoleBoard(board, color);
         game.renderBoard();
     }

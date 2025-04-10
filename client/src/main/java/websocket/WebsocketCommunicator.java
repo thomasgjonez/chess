@@ -1,6 +1,7 @@
 package websocket;
 
 import chess.ChessGame;
+import clients.GameClient;
 import com.google.gson.Gson;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
@@ -19,8 +20,10 @@ public class WebsocketCommunicator extends Endpoint {
 
     private Session session;
     private static final Gson gson = new Gson();
+    private final GameClient gameClient;
 
-    public WebsocketCommunicator(String serverDomain) throws Exception {
+    public WebsocketCommunicator(String serverDomain, GameClient gameClient) throws Exception {
+        this.gameClient = gameClient;
         try {
 
             //URI uri = new URI("ws://" + serverDomain + "/ws");
@@ -52,6 +55,7 @@ public class WebsocketCommunicator extends Endpoint {
             }
             case LOAD_GAME -> {
                 LoadGame loadGame = gson.fromJson(message, LoadGame.class);
+                gameClient.setCurrentGame(loadGame.getGame());
             }
             default -> System.err.println("Unknown message type received.");
         }
