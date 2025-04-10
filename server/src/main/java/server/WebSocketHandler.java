@@ -3,11 +3,14 @@ package server;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
+import service.WebSocketService;
 import websocket.commands.*;
 
 @WebSocket
-public class GameWebSocketHandler extends BaseHandler{
+public class WebSocketHandler extends BaseHandler{
     private static final Gson gson = new Gson();
+    private final WebSocketService wsService = new WebSocketService();
+
     @OnWebSocketConnect
     public void onConnect(Session session) {
         System.out.println("WebSocket connected: " + session.getRemoteAddress());
@@ -23,23 +26,23 @@ public class GameWebSocketHandler extends BaseHandler{
 
             switch (base.getCommandType()) {
                 case CONNECT -> {
-                    ConnectCommand connect = fromJson(message, ConnectCommand.class);
-                    //handleConnect(session, connect);
+                    ConnectCommand cmd = fromJson(message, ConnectCommand.class);
+                    wsService.connect(session, cmd);
                     System.out.println("CONNECT called");
                 }
                 case MAKE_MOVE -> {
-                    MakeMoveCommand move = fromJson(message, MakeMoveCommand.class);
-                    //handleMakeMove(session, move);
+                    MakeMoveCommand cmd = fromJson(message, MakeMoveCommand.class);
+                    //wsService.makeMove(session, cmd);
                     System.out.println("MOVE called");
                 }
                 case LEAVE -> {
-                    LeaveCommand leave = fromJson(message, LeaveCommand.class);
-                    //handleLeave(session, leave);
+                    LeaveCommand cmd = fromJson(message, LeaveCommand.class);
+                    //wsService.leave(session, cmd);
                     System.out.println("LEAVE called");
                 }
                 case RESIGN -> {
-                    ResignCommand resign = fromJson(message, ResignCommand.class);
-                    //handleResign(session, resign);
+                    ResignCommand cmd = fromJson(message, ResignCommand.class);
+                    //wsService.resign(session, cmd);
                     System.out.println("RESIGN called");
                 }
             }
