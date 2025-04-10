@@ -4,6 +4,7 @@ import static ui.EscapeSequences.*;
 import clients.PostLoginClient;
 import clients.PreLoginClient;
 import model.AuthData;
+import model.GameData;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -24,29 +25,33 @@ public class PostLoginRepl {
         System.out.print(client.help());
 
         Scanner scanner = new Scanner(System.in);
-        var result = "";
-        while (!result.equals("quit")) {
+        Object result = "";
+        while (!Objects.equals(result, "quit")) {
             String line = scanner.nextLine();
 
             try {
                 result = client.eval(line);
-                System.out.print(result);
 
-                if (result.startsWith("join game success") || result.startsWith("observe game success")){
-                    //gets player color to pass to GameRepl
-                    String[] parts = result.split(":");
-                    String playerColor = parts.length > 1 ? parts[1].trim() : null;
+                if (result instanceof String strResult) {
+                    System.out.print(strResult);
 
-                    GameRepl gameRepl = new GameRepl(serverUrl, playerColor);
+                    if (strResult.equals("logout success\n")) {
+                        return true; // logout
+                    }
+
+                } else if (result instanceof GameData game) {
+                    String playerColor = "white"; // default for observers
+                    if (line.toLowerCase().startsWith("join")) {
+                        playerColor = line.strip().split(" ")[1]; // from user input
+                    }
+
+                    GameRepl gameRepl = new GameRepl(serverUrl, playerColor, authData, game.gameID());
                     boolean returnedToPost = gameRepl.run();
 
                     if (returnedToPost) {
                         System.out.print("Returned to Game Menu\n");
                         System.out.println(client.help());
                     }
-                }
-                if (Objects.equals(result, "logout success\n")){
-                    return true;//returns to preloginRepl
                 }
 
             } catch (Throwable e) {

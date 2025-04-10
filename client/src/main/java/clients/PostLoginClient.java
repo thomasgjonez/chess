@@ -22,7 +22,7 @@ public class PostLoginClient {
 
     }
 
-    public String eval(String input) throws ResponseException {
+    public Object eval(String input) throws ResponseException {
         var tokens = input.strip().split(" ");
         var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
@@ -96,13 +96,14 @@ public class PostLoginClient {
         }
     }
 
-    public String joinGame(String... params) {
+    public GameData joinGame(String... params) {
         if (params.length < 2) {
-            return "Join game failed - missing required fields: " +
+            System.out.print("Join game failed - missing required fields: " +
                     EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> " +
                     EscapeSequences.SET_TEXT_COLOR_MAGENTA +
                     "WHITE" + EscapeSequences.RESET_TEXT_COLOR + " or " + EscapeSequences.SET_TEXT_COLOR_MAGENTA+
-                    "BLACK.\n" + EscapeSequences.RESET_TEXT_COLOR;
+                    "BLACK.\n" + EscapeSequences.RESET_TEXT_COLOR);
+            return null;
         }
 
         try {
@@ -110,35 +111,41 @@ public class PostLoginClient {
             String color = params[1].toUpperCase();
 
             if (!color.equals("WHITE") && !color.equals("BLACK")) {
-                return "Join game failed - color must be " + EscapeSequences.SET_TEXT_COLOR_MAGENTA +
+                System.out.print("Join game failed - color must be " + EscapeSequences.SET_TEXT_COLOR_MAGENTA +
                 "WHITE" + EscapeSequences.RESET_TEXT_COLOR + " or " + EscapeSequences.SET_TEXT_COLOR_MAGENTA+
-                        "BLACK\n" + EscapeSequences.RESET_TEXT_COLOR;
+                        "BLACK\n" + EscapeSequences.RESET_TEXT_COLOR);
+                return null;
             }
 
             GameData game = gameIndexMap.get(index);
             if (game == null) {
-                return "Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> " + EscapeSequences.RESET_TEXT_COLOR +
-                        "- number must be from the games list\n";
+                System.out.print("Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> " + EscapeSequences.RESET_TEXT_COLOR +
+                        "- number must be from the games list\n");
+                return null;
             }
 
-            String gameId = game.gameID().toString();
-            GameData result = serverFacade.joinGame(color, gameId, authData.authToken());
-            return "join game success:" + color + "\n";
+            serverFacade.joinGame(color, game.gameID().toString(), authData.authToken());
+            System.out.print("join game success: " + color + "\n");
+
+            return game;
 
         } catch (NumberFormatException e) {
-            return "Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> " + EscapeSequences.RESET_TEXT_COLOR +
-                    "- number must be from the games list\n";
+            System.out.print("Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> " + EscapeSequences.RESET_TEXT_COLOR +
+                    "- number must be from the games list\n");
+            return null;
         } catch (ResponseException e) {
-            return "join game failed - " + e.getMessage() + "\n";
+            System.out.print("join game failed - " + e.getMessage() + "\n");
+            return null;
         }
     }
 
-    public String observeGame(String... params) throws ResponseException {
+    public GameData observeGame(String... params) throws ResponseException {
         // do nothing for right now, maybe I'll just have a variable that stores the GameState and observe Game just fetches that gameState
         if (params.length < 1) {
-            return "Observe game failed - missing required field: " +
+            System.out.print("Observe game failed - missing required field: " +
                     EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> \n" +
-                    EscapeSequences.RESET_TEXT_COLOR;
+                    EscapeSequences.RESET_TEXT_COLOR);
+            return null;
         }
 
         try {
@@ -146,15 +153,18 @@ public class PostLoginClient {
             GameData game = gameIndexMap.get(index);
 
             if (game == null) {
-                return "Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> " + EscapeSequences.RESET_TEXT_COLOR +
-                        "- number must be from the games list\n";
+                System.out.print("Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> " + EscapeSequences.RESET_TEXT_COLOR +
+                        "- number must be from the games list\n");
+                return null;
             }
 
-            return "observe game success: " + "white\n"; //default will be white
+            System.out.print("observe game success: white\n");
+            return game;
 
         } catch (NumberFormatException e) {
-            return "Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> - " + EscapeSequences.RESET_TEXT_COLOR +
-                    "number must be from the games list\n";
+            System.out.print("Invalid " + EscapeSequences.SET_TEXT_COLOR_BLUE + "<ID> - " + EscapeSequences.RESET_TEXT_COLOR +
+                    "number must be from the games list\n");
+            return null;
         }
     }
 

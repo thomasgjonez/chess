@@ -4,10 +4,11 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
+import model.AuthData;
 import ui.EscapeSequences;
 import ui.ConsoleBoard;
 import websocket.WebsocketCommunicator;
-import websocket.commands.UserGameCommand;
+import websocket.commands.*;
 
 import java.util.Arrays;
 
@@ -17,11 +18,14 @@ public class GameClient {
     private String authToken;
     private int gameID;
 
-    public GameClient(String serverUrl, String playerColor) throws Exception {
+    public GameClient(String serverUrl, String playerColor, AuthData authData, Integer gameID) throws Exception {
         this.playerColor = playerColor;
-        this.authToken = authToken;
+        this.authToken = authData.authToken();
         this.gameID = gameID;
-        this.socket = new WebsocketCommunicator(serverUrl);
+        //this.socket = new WebsocketCommunicator(serverUrl);
+
+        var connect = new ConnectCommand(authToken, gameID);
+        //socket.sendCommand(connect);
     }
 
     public String eval(String input) {
@@ -39,14 +43,12 @@ public class GameClient {
     }
 
     public String leave(){
-        var command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
-        socket.sendCommand(command);
+        socket.sendCommand(new LeaveCommand(authToken, gameID));
         return "leave";
     }
 
     private String resign() {
-        var command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
-        socket.sendCommand(command);
+        socket.sendCommand(new ResignCommand(authToken, gameID));
         return "You resigned the game.";
     }
 
@@ -58,10 +60,9 @@ public class GameClient {
         try {
             ChessPosition start = parsePosition(params[0]);
             ChessPosition end = parsePosition(params[1]);
-            ChessMove move = new ChessMove(start, end, null); // Add promotion later if needed
+            ChessMove move = new ChessMove(start, end, null); // promotion null for now
 
-            var command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, move);
-            socket.sendCommand(command);
+            socket.sendCommand(new MakeMoveCommand(authToken, gameID, move));
 
             return "Move sent: " + params[0] + " to " + params[1];
         } catch (Exception e) {

@@ -2,6 +2,7 @@ package ui;
 
 import clients.GameClient;
 import clients.PostLoginClient;
+import model.AuthData;
 
 import java.util.Scanner;
 
@@ -11,9 +12,10 @@ public class GameRepl {
     private final GameClient client;
     private final String serverUrl;
 
-    public GameRepl(String serverUrl, String playerColor) throws Exception {
+
+    public GameRepl(String serverUrl, String playerColor, AuthData authData, Integer gameID) throws Exception {
         this.serverUrl = serverUrl;
-        this.client = new GameClient(serverUrl, playerColor);
+        this.client = new GameClient(serverUrl, playerColor, authData, gameID);
     }
 
     public boolean run() {
