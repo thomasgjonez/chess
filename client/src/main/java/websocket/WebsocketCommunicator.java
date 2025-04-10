@@ -23,7 +23,8 @@ public class WebsocketCommunicator extends Endpoint {
     public WebsocketCommunicator(String serverDomain) throws Exception {
         try {
 
-            URI uri = new URI("ws://" + serverDomain + "/ws");
+            //URI uri = new URI("ws://" + serverDomain + "/ws");
+            URI uri = new URI("ws://localhost:8080/ws");//temp for debugging
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
@@ -37,7 +38,7 @@ public class WebsocketCommunicator extends Endpoint {
 
     @Override
     public void onOpen(Session session, EndpointConfig config) {
-        // Nothing needed here for now
+        session.addMessageHandler(String.class, this::handleMessage);
     }
 
     private void handleMessage(String message) {

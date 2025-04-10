@@ -22,10 +22,10 @@ public class GameClient {
         this.playerColor = playerColor;
         this.authToken = authData.authToken();
         this.gameID = gameID;
-        //this.socket = new WebsocketCommunicator(serverUrl);
+        this.socket = new WebsocketCommunicator(serverUrl);
 
         var connect = new ConnectCommand(authToken, gameID);
-        //socket.sendCommand(connect);
+        socket.sendCommand(connect);
     }
 
     public String eval(String input) {
