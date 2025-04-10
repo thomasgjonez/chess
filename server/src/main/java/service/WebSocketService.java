@@ -13,6 +13,7 @@ import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.commands.ConnectCommand;
 import websocket.commands.MakeMoveCommand;
+import websocket.commands.ResignCommand;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class WebSocketService {
+public class WebSocketService extends BaseService {
     private final Gson gson = new Gson();
 
     private final Map<Integer, List<Session>> gameSessions = new ConcurrentHashMap<>();
@@ -143,6 +144,56 @@ public class WebSocketService {
             send(session, new Error("Error: Invalid move: " + e.getMessage()));
         } catch (DataAccessException e) {
             send(session, new Error("Error: Database failure: " + e.getMessage()));
+        }
+    }
+    public void resign(Session session, ResignCommand command) throws IOException {
+        try {
+            // Validate auth
+            if (!AuthDAO.isValidAuth(command.getAuthToken())) {
+                send(session, new Error("Error: Invalid auth token"));
+                return;
+            }
+
+            String username = AuthDAO.getUsername(command.getAuthToken());
+
+            //  Get game
+            GameData game = GameDAO.getGame(command.getGameID());
+            if (game == null) {
+                send(session, new Error("Error: Game not found"));
+                return;
+            }
+
+            ChessGame chessGame = game.game();
+
+            if (chessGame.isGameOver()) {
+                send(session, new Error("Error: Game is already over"));
+                return;
+            }
+
+            //Ensure the user is a player (not observer)
+            if (!username.equals(game.whiteUsername()) && !username.equals(game.blackUsername())) {
+                send(session, new Error("Error: Observers cannot resign"));
+                return;
+            }
+
+            // Set game as over
+            chessGame.setGameOver(true);
+
+            GameData updatedGame = new GameData(
+                    game.gameID(),
+                    game.whiteUsername(),
+                    game.blackUsername(),
+                    game.gameName(),
+                    chessGame
+            );
+            GameDAO.updateGame(updatedGame);
+
+            //Broadcast the resignation
+            String msg = username + " has resigned. Game over!";
+            broadcast(command.getGameID(), new Notification(msg), null);
+
+        } catch (DataAccessException e) {
+            send(session, new Error("Error: Database failure"));
         }
     }
 

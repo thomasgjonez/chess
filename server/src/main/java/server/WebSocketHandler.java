@@ -42,7 +42,7 @@ public class WebSocketHandler extends BaseHandler{
                 }
                 case RESIGN -> {
                     ResignCommand cmd = fromJson(message, ResignCommand.class);
-                    //wsService.resign(session, cmd);
+                    wsService.resign(session, cmd);
                     System.out.println("RESIGN called");
                 }
             }

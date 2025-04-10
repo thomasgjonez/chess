@@ -14,6 +14,7 @@ import java.util.Objects;
 public class ChessGame {
     private TeamColor teamColor; //whose turn it is, maybe rename the variable?
     private ChessBoard chessBoard;
+    private Boolean gameOver = false;
 
     public ChessGame() {
         this.chessBoard = new ChessBoard();
@@ -225,6 +226,14 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return chessBoard;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean over) {
+        this.gameOver = over;
     }
 
     @Override
