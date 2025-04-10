@@ -23,6 +23,10 @@ public abstract class BaseHandler {
         return gson.toJson(obj);
     }
 
+    protected <T> T fromJson(String json, Class<T> clas){
+        return gson.fromJson(json, clas);
+    }
+
     // handle exceptions and return standarized error messages
     protected String handleException(Response res, Exception e) {
         res.status(500);
