@@ -18,7 +18,7 @@ public class GameWebSocketHandler {
             //debugging purposes
             session.getRemote().sendString("Echo: " + message);
         } catch (Exception e) {
-            System.err.println("⚠️ Error sending response: " + e.getMessage());
+            System.err.println(" Error sending response: " + e.getMessage());
         }
     }
 
