@@ -100,10 +100,10 @@ public class GameClient {
                 highlights.add(move.getEndPosition());
             }
 
-
+            System.out.println("Rendering board for: " + playerColor);
             ChessGame.TeamColor color = (playerColor.equalsIgnoreCase("WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
             ConsoleBoard consoleBoard = new ConsoleBoard(currentGame.getBoard(), color);
-            //consoleBoard.renderBoard(pos, highlights);
+            consoleBoard.renderBoard(pos, highlights);
 
             return "";
         } catch (IllegalArgumentException e) {
@@ -113,12 +113,14 @@ public class GameClient {
 
     public void printGame(){
         //maybe I should just get the actual ChessGame instance, which will have everything i need, but I'll do that phase 6
-        ChessBoard board = new ChessBoard();// will need to change in the future probs
-        board.resetBoard();//this sets the game board up
+        if (currentGame == null) {
+            System.out.println("Game not yet loaded. Try again in a moment.");
+            return;
+        }
 
         ChessGame.TeamColor color = (playerColor.equalsIgnoreCase("WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
-        ConsoleBoard game = new ConsoleBoard(board, color);
-        game.renderBoard();
+        ConsoleBoard consoleBoard = new ConsoleBoard(currentGame.getBoard(), color);
+        consoleBoard.renderBoard(null, null);
     }
 
     public String help(){

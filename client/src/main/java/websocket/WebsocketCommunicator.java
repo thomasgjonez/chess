@@ -32,15 +32,16 @@ public class WebsocketCommunicator extends Endpoint {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
 
-            this.session.addMessageHandler(String.class, this::handleMessage);
-
         } catch (DeploymentException | IOException | URISyntaxException ex) {
+            System.err.println("❌ WebSocket failed to connect: " + ex.getClass().getSimpleName() + " - " + ex.getMessage());
+            ex.printStackTrace();
             throw new Exception("WebSocket connection failed: " + ex.getMessage());
         }
     }
 
     @Override
     public void onOpen(Session session, EndpointConfig config) {
+        System.out.println("✅ WebSocket successfully connected!");
         session.addMessageHandler(String.class, this::handleMessage);
     }
 
@@ -56,6 +57,7 @@ public class WebsocketCommunicator extends Endpoint {
             case LOAD_GAME -> {
                 LoadGame loadGame = gson.fromJson(message, LoadGame.class);
                 gameClient.setCurrentGame(loadGame.getGame());
+                gameClient.printGame();
             }
             default -> System.err.println("Unknown message type received.");
         }

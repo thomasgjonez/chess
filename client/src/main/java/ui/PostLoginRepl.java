@@ -40,12 +40,11 @@ public class PostLoginRepl {
                     }
 
                 } else if (result instanceof GameData game) {
-                    String playerColor = "white"; // default for observers
-                    if (line.toLowerCase().startsWith("join")) {
-                        playerColor = line.strip().split(" ")[1]; // from user input
-                    }
+                    String[] parts = line.strip().split(" ");
+                    String playerColor = parts.length > 2 ? parts[2].trim().toUpperCase() : "WHITE";
 
                     GameRepl gameRepl = new GameRepl(serverUrl, playerColor, authData, game.gameID());
+                    System.out.println(game.gameID());
                     boolean returnedToPost = gameRepl.run();
 
                     if (returnedToPost) {

@@ -7,6 +7,7 @@ import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
 import static ui.EscapeSequences.*;
 
@@ -20,7 +21,7 @@ public class ConsoleBoard {
 
     }
 
-    public void renderBoard() {
+    public void renderBoard(ChessPosition selected, Set<ChessPosition> highlights) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
 
@@ -42,7 +43,11 @@ public class ConsoleBoard {
                 ChessPosition pos = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(pos);
                 boolean isDarkSquare = (row + col) % 2 == 0;
-                printSquare(out, piece, isDarkSquare);
+
+                boolean isHighlighted = highlights != null && highlights.contains(pos);
+                boolean isSelected = selected != null && selected.equals(pos);
+
+                printSquare(out, piece, isDarkSquare, isHighlighted, isSelected);
             }
 
             // Print right row label with black background
@@ -59,8 +64,16 @@ public class ConsoleBoard {
     }
 
 
-    private void printSquare(PrintStream out, ChessPiece piece, boolean isDarkSquare) {
-        String bgColor = isDarkSquare ? SET_BG_COLOR_LIGHT_GREY : SET_BG_COLOR_WHITE;
+    private void printSquare(PrintStream out, ChessPiece piece, boolean isDarkSquare, boolean isHighlighted, boolean isSelected) {
+        String bgColor;
+
+        if (isSelected) {
+            bgColor = SET_BG_COLOR_GREEN;
+        } else if (isHighlighted) {
+            bgColor = SET_BG_COLOR_YELLOW;
+        } else {
+            bgColor = isDarkSquare ? SET_BG_COLOR_LIGHT_GREY : SET_BG_COLOR_WHITE;
+        }
         String symbol = (piece != null) ? getSymbol(piece) : EMPTY;
         out.print(bgColor + SET_TEXT_COLOR_BLACK);
         out.print(symbol);
