@@ -65,15 +65,14 @@ public class WebSocketService extends BaseService {
 
     public void makeMove(Session session, MakeMoveCommand command) throws IOException {
         try {
-            //Validate auth token and get username
             if (!AuthDAO.isValidAuth(command.getAuthToken())) {
                 send(session, new Error("Error: Invalid auth token"));
                 return;
             }
-            String username = AuthDAO.getUsername(command.getAuthToken());
 
-            //Get game data
+            String username = AuthDAO.getUsername(command.getAuthToken());
             GameData game = GameDAO.getGame(command.getGameID());
+
             if (game == null) {
                 send(session, new Error("Error: Game not found"));
                 return;
@@ -81,7 +80,12 @@ public class WebSocketService extends BaseService {
 
             ChessGame chessGame = game.game();
 
-            //Determine user’s color
+            if (chessGame.isGameOver()) {
+                System.out.println("chess game is over");
+                send(session, new Error("Error: Game is already over"));
+                return;
+            }
+
             ChessGame.TeamColor userColor = null;
             if (username.equals(game.whiteUsername())) {
                 userColor = ChessGame.TeamColor.WHITE;
@@ -92,53 +96,50 @@ public class WebSocketService extends BaseService {
                 return;
             }
 
-
-            //Ensure it's the user's turn
             if (!chessGame.getTeamTurn().equals(userColor)) {
                 send(session, new Error("Error: It's not your turn"));
                 return;
             }
+
             ChessMove move = command.getMove();
+            chessGame.makeMove(move);
+            System.out.println("After move: " + chessGame);
 
-            ChessPosition start = move.getStartPosition();
-            ChessPosition end = move.getEndPosition();
+            ChessGame.TeamColor opponent = chessGame.getTeamTurn();
 
-            System.out.println("START = row " + start.getRow() + ", col " + start.getColumn());
-            System.out.println("END   = row " + end.getRow() + ", col " + end.getColumn());
+            String notificationMessage;
 
-            //Attempt the move
-            chessGame.makeMove(command.getMove());
-
-
-
-            //Update the game in the DB
-            GameData updatedGame = new GameData(
+            if (chessGame.isInCheckmate(opponent)) {
+                chessGame.setGameOver(true);
+                notificationMessage = "Checkmate! " + username + " wins!";
+            } else if (chessGame.isInStalemate(opponent)) {
+                chessGame.setGameOver(true);
+                notificationMessage = "Stalemate! It's a draw!";
+            } else if (chessGame.isInCheck(opponent)) {
+                notificationMessage = username + " made a move — " + opponent + " is in check!";
+            } else {
+                notificationMessage = username + " made a move.";
+            }
+            System.out.println("After move (before DB save):");
+            System.out.println("Turn: " + chessGame.getTeamTurn());
+            System.out.println("Game over? " + chessGame.isGameOver());
+            System.out.println(chessGame);
+            GameDAO.updateGame(new GameData(
                     game.gameID(),
                     game.whiteUsername(),
                     game.blackUsername(),
                     game.gameName(),
                     chessGame
-            );
-            GameDAO.updateGame(updatedGame);
+            ));
 
-            // Broadcast updated board
+            GameData justSaved = GameDAO.getGame(game.gameID());
+            System.out.println("After fetching back from DB:");
+            System.out.println("Turn: " + justSaved.game().getTeamTurn());
+            System.out.println("Game over? " + justSaved.game().isGameOver());
+            System.out.println(justSaved.game());
+
             broadcast(command.getGameID(), new LoadGame(chessGame), null);
-
-            // Broadcast move notification will get more specific later on
-            ChessGame.TeamColor opponent = (userColor == ChessGame.TeamColor.WHITE)
-                    ? ChessGame.TeamColor.BLACK
-                    : ChessGame.TeamColor.WHITE;
-
-            if (chessGame.isInCheckmate(opponent)) {
-                broadcast(command.getGameID(), new Notification("Checkmate! " + username + " wins!"), null);
-
-            } else if (chessGame.isInStalemate(opponent)) {
-                broadcast(command.getGameID(), new Notification("Stalemate! It's a draw!"), null);
-            } else if (chessGame.isInCheck(opponent)) {
-                broadcast(command.getGameID(), new Notification(username + " made a move — " + opponent + " is in check!"), null);
-            } else {
-                broadcast(command.getGameID(), new Notification(username + " made a move."), null);
-            }
+            broadcast(command.getGameID(), new Notification(notificationMessage), session);
 
         } catch (InvalidMoveException e) {
             send(session, new Error("Error: Invalid move: " + e.getMessage()));
@@ -146,6 +147,8 @@ public class WebSocketService extends BaseService {
             send(session, new Error("Error: Database failure: " + e.getMessage()));
         }
     }
+
+
     public void resign(Session session, ResignCommand command) throws IOException {
         try {
             // Validate auth

@@ -227,6 +227,13 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return chessBoard;
     }
+    public TeamColor getTeamColor() {
+        return teamColor;
+    }
+
+    public Boolean getGameOver() {
+        return gameOver;
+    }
 
     public boolean isGameOver() {
         return gameOver;
@@ -252,6 +259,7 @@ public class ChessGame {
     public String toString() {
         return "ChessGame{" +
                 "teamColor=" + teamColor +
+                ", gameOver=" + gameOver +
                 ", chessBoard=" + chessBoard +
                 '}';
     }
