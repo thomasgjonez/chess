@@ -55,36 +55,39 @@ public class GameClient {
 
     public String leave(){
         socket.sendCommand(new LeaveCommand(authToken, gameID));
-        return "leave";
+        return "leave\n";
     }
 
     private String resign() {
         socket.sendCommand(new ResignCommand(authToken, gameID));
-        return "You resigned the game.";
+        return "You resigned the game.\n";
     }
 
     private String move(String[] params) {
+        if (playerColor.equalsIgnoreCase("OBSERVER")){
+            return "Forbidden: Observers cannot make moves\n";
+        }
         if (params.length != 2) {
-            return "Usage: move <from> <to> (e.g. move e2 e4)";
+            return "Usage: move <PIECEPOS> <TARGETPOS> (e.g. move e2 e4)\n";
         }
 
         try {
             ChessPosition start = parsePosition(params[0]);
             ChessPosition end = parsePosition(params[1]);
-            ChessMove move = new ChessMove(start, end, null); // promotion null for now
-
+            ChessMove move = new ChessMove(start, end, null);
+            //need to specify promotion piece eventually
             socket.sendCommand(new MakeMoveCommand(authToken, gameID, move));
 
-            return "Move sent: " + params[0] + " to " + params[1];
+            return "Move submitted: " + params[0] + " to " + params[1]+ "\n";
         } catch (Exception e) {
-            return "Invalid move format.";
+            return "Invalid move format.\n";
         }
     }
 
     private String highlight(String[] params){
         //will need to return the array of possible moves, draw the board and while drawing highlight the appropriate ones
         if (params.length != 1) {
-            return "Usage: highlight <position> (e.g. highlight e2)\n";
+            return "Usage: highlight <PIECEPOS> (e.g. highlight e2)\n";
         }
 
         try {
@@ -101,7 +104,7 @@ public class GameClient {
             }
 
             System.out.println("Rendering board for: " + playerColor);
-            ChessGame.TeamColor color = (playerColor.equalsIgnoreCase("WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+            ChessGame.TeamColor color = (playerColor.equalsIgnoreCase("BLACK")) ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
             ConsoleBoard consoleBoard = new ConsoleBoard(currentGame.getBoard(), color);
             consoleBoard.renderBoard(pos, highlights);
 
@@ -114,11 +117,11 @@ public class GameClient {
     public void printGame(){
         //maybe I should just get the actual ChessGame instance, which will have everything i need, but I'll do that phase 6
         if (currentGame == null) {
-            System.out.println("Game not yet loaded. Try again in a moment.");
+            System.out.println("Game not yet loaded. Try again in a moment.\n");
             return;
         }
 
-        ChessGame.TeamColor color = (playerColor.equalsIgnoreCase("WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+        ChessGame.TeamColor color = (playerColor.equalsIgnoreCase("BlACK")) ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
         ConsoleBoard consoleBoard = new ConsoleBoard(currentGame.getBoard(), color);
         consoleBoard.renderBoard(null, null);
     }
@@ -148,10 +151,14 @@ public class GameClient {
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +
                 " - list possible commands\n";
     }
+    public void onError(String errorMessage) {
+        System.out.println(errorMessage);
+    }
 
     private ChessPosition parsePosition(String pos) {
         int col = pos.charAt(0) - 'a' + 1;
         int row = Integer.parseInt(pos.substring(1));
         return new ChessPosition(row, col);
     }
+
 }

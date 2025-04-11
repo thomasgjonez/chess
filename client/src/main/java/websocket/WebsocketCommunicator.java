@@ -27,13 +27,14 @@ public class WebsocketCommunicator extends Endpoint {
         try {
 
             //URI uri = new URI("ws://" + serverDomain + "/ws");
+            System.out.println(serverDomain);
             URI uri = new URI("ws://localhost:8080/ws");//temp for debugging
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
 
         } catch (DeploymentException | IOException | URISyntaxException ex) {
-            System.err.println("❌ WebSocket failed to connect: " + ex.getClass().getSimpleName() + " - " + ex.getMessage());
+            System.err.println("WebSocket failed to connect: " + ex.getClass().getSimpleName() + " - " + ex.getMessage());
             ex.printStackTrace();
             throw new Exception("WebSocket connection failed: " + ex.getMessage());
         }
@@ -41,7 +42,7 @@ public class WebsocketCommunicator extends Endpoint {
 
     @Override
     public void onOpen(Session session, EndpointConfig config) {
-        System.out.println("✅ WebSocket successfully connected!");
+        //System.out.println("WebSocket successfully connected!");
         session.addMessageHandler(String.class, this::handleMessage);
     }
 
@@ -50,9 +51,11 @@ public class WebsocketCommunicator extends Endpoint {
         switch (base.getServerMessageType()) {
             case NOTIFICATION -> {
                 Notification notif = gson.fromJson(message, Notification.class);
+                System.out.println("Notification: " + notif.getMessage());
             }
             case ERROR -> {
                 Error error = gson.fromJson(message, Error.class);
+                gameClient.onError(error.getErrorMessage());
             }
             case LOAD_GAME -> {
                 LoadGame loadGame = gson.fromJson(message, LoadGame.class);

@@ -25,7 +25,7 @@ public class GameRepl {
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.equals("leave")) {
+        while (!result.equals("leave\n")) {
             String line = scanner.nextLine();
 
             try {

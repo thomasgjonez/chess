@@ -41,7 +41,7 @@ public class PostLoginRepl {
 
                 } else if (result instanceof GameData game) {
                     String[] parts = line.strip().split(" ");
-                    String playerColor = parts.length > 2 ? parts[2].trim().toUpperCase() : "WHITE";
+                    String playerColor = parts.length > 2 ? parts[2].trim().toUpperCase() : "OBSERVER";
 
                     GameRepl gameRepl = new GameRepl(serverUrl, playerColor, authData, game.gameID());
                     System.out.println(game.gameID());

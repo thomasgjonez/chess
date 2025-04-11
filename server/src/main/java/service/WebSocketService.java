@@ -121,10 +121,10 @@ public class WebSocketService extends BaseService {
             } else {
                 notificationMessage = username + " made a move.";
             }
-            System.out.println("After move (before DB save):");
-            System.out.println("Turn: " + chessGame.getTeamTurn());
-            System.out.println("Game over? " + chessGame.isGameOver());
-            System.out.println(chessGame);
+//            System.out.println("After move (before DB save):");
+//            System.out.println("Turn: " + chessGame.getTeamTurn());
+//            System.out.println("Game over? " + chessGame.isGameOver());
+//            System.out.println(chessGame);
             GameDAO.updateGame(new GameData(
                     game.gameID(),
                     game.whiteUsername(),
@@ -133,19 +133,19 @@ public class WebSocketService extends BaseService {
                     chessGame
             ));
 
-            GameData justSaved = GameDAO.getGame(game.gameID());
-            System.out.println("After fetching back from DB:");
-            System.out.println("Turn: " + justSaved.game().getTeamTurn());
-            System.out.println("Game over? " + justSaved.game().isGameOver());
-            System.out.println(justSaved.game());
+//            GameData justSaved = GameDAO.getGame(game.gameID());
+//            System.out.println("After fetching back from DB:");
+//            System.out.println("Turn: " + justSaved.game().getTeamTurn());
+//            System.out.println("Game over? " + justSaved.game().isGameOver());
+//            System.out.println(justSaved.game());
 
             broadcast(command.getGameID(), new LoadGame(chessGame), null);
             broadcast(command.getGameID(), new Notification(notificationMessage), session);
 
         } catch (InvalidMoveException e) {
-            send(session, new Error("Error: Invalid move: " + e.getMessage()));
+            send(session, new Error("Error: Invalid move- " + e.getMessage()));
         } catch (DataAccessException e) {
-            send(session, new Error("Error: Database failure: " + e.getMessage()));
+            send(session, new Error("Error: Database failure- " + e.getMessage()));
         }
     }
 

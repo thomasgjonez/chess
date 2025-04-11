@@ -96,12 +96,12 @@ public class ChessGame {
 
         ChessPiece piece = chessBoard.getPiece(start);
         if (piece == null || piece.getTeamColor() != teamColor) {
-            throw new InvalidMoveException("Invalid move: No piece in that start position or its not your turn.");
+            throw new InvalidMoveException("No piece in that start position or its not your turn.");
         }
 
         Collection<ChessMove> validMoves = validMoves(start);
         if (validMoves == null || !validMoves.contains(move)) {
-            throw new InvalidMoveException("Invalid move: You can't move there :/");
+            throw new InvalidMoveException("You can't move there :/");
         }
         // Perform the move on the board
         chessBoard.addPiece(end, piece);
