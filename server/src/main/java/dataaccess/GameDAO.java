@@ -91,14 +91,16 @@ public class GameDAO {
     }
 
     public static void updateGame(GameData gameData) throws DataAccessException{
-        String query = "UPDATE GameTable SET whiteUsername = ?, blackUsername = ? WHERE gameID = ?";
+        String query = "UPDATE GameTable SET whiteUsername = ?, blackUsername = ?, gameName = ?, gameState = ? WHERE gameID = ?";
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, gameData.whiteUsername());
             stmt.setString(2, gameData.blackUsername());
-            stmt.setInt(3, gameData.gameID());
+            stmt.setString(3, gameData.gameName());
+            stmt.setString(4, new Gson().toJson(gameData.game()));  // serialize the full ChessGame
+            stmt.setInt(5, gameData.gameID());
 
             stmt.executeUpdate();
 
