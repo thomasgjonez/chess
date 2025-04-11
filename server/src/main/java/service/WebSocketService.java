@@ -41,6 +41,15 @@ public class WebSocketService extends BaseService {
         GameData game = fetchGame(command.getGameID(), session);
         if (game == null) {return;}
 
+        ChessGame.TeamColor color = null;
+
+        // get color as token
+        if(username.equals(game.blackUsername())){
+            color = ChessGame.TeamColor.BLACK;
+        } else if (username.equals(game.whiteUsername())) {
+            color = ChessGame.TeamColor.WHITE;
+        }
+
         // Track session
         gameSessions.computeIfAbsent(command.getGameID(), k -> new ArrayList<>()).add(session);
         sessionToGameMap.put(session, command.getGameID());
@@ -49,8 +58,19 @@ public class WebSocketService extends BaseService {
         ChessGame chessGame = game.game();
         send(session, new LoadGame(chessGame));
 
+        String role;
+        if (color == null){
+            role = "observer";
+        } else {
+            if (color.equals(ChessGame.TeamColor.WHITE)) {
+                role = "WHITE player";
+            } else {
+                role = "BLACK player";
+            }
+        }
+
         // Notify others
-        String msg = username + " joined game ";
+        String msg = username + " joined game as " + role ;
         broadcast(command.getGameID(), new Notification(msg), session);
 
         System.out.println("success?");
