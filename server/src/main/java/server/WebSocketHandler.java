@@ -8,7 +8,6 @@ import websocket.commands.*;
 
 @WebSocket
 public class WebSocketHandler extends BaseHandler{
-    private static final Gson gson = new Gson();
     private final WebSocketService wsService = new WebSocketService();
 
     @OnWebSocketConnect

@@ -55,6 +55,7 @@ public class GameClient {
 
     public String leave(){
         socket.sendCommand(new LeaveCommand(authToken, gameID));
+        socket.close();
         return "leave\n";
     }
 

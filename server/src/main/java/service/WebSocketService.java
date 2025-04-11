@@ -56,7 +56,7 @@ public class WebSocketService extends BaseService {
 
         // Notify others
         String username = AuthDAO.getUsername(command.getAuthToken());
-        String msg = username + " joined game " + command.getGameID();
+        String msg = username + " joined game ";
         broadcast(command.getGameID(), new Notification(msg), session);
 
         System.out.println("success?");
@@ -82,7 +82,7 @@ public class WebSocketService extends BaseService {
             ChessGame chessGame = game.game();
 
             if (chessGame.isGameOver()) {
-                System.out.println("chess game is over");
+                //System.out.println("chess game is over");
                 send(session, new Error("Error: Game is already over"));
                 return;
             }
@@ -104,7 +104,7 @@ public class WebSocketService extends BaseService {
 
             ChessMove move = command.getMove();
             chessGame.makeMove(move);
-            System.out.println("After move: " + chessGame);
+            //System.out.println("After move: " + chessGame);
 
             ChessGame.TeamColor opponent = chessGame.getTeamTurn();
 
