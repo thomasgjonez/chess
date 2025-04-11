@@ -19,7 +19,7 @@ import static ui.EscapeSequences.ERASE_LINE;
 public class WebsocketCommunicator extends Endpoint {
 
     private Session session;
-    private static final Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
     private final GameClient gameClient;
 
     public WebsocketCommunicator(String serverDomain, GameClient gameClient) throws Exception {
@@ -47,18 +47,18 @@ public class WebsocketCommunicator extends Endpoint {
     }
 
     private void handleMessage(String message) {
-        ServerMessage base = gson.fromJson(message, ServerMessage.class);
+        ServerMessage base = GSON.fromJson(message, ServerMessage.class);
         switch (base.getServerMessageType()) {
             case NOTIFICATION -> {
-                Notification notif = gson.fromJson(message, Notification.class);
+                Notification notif = GSON.fromJson(message, Notification.class);
                 System.out.println("Notification: " + notif.getMessage());
             }
             case ERROR -> {
-                Error error = gson.fromJson(message, Error.class);
+                Error error = GSON.fromJson(message, Error.class);
                 gameClient.onError(error.getErrorMessage());
             }
             case LOAD_GAME -> {
-                LoadGame loadGame = gson.fromJson(message, LoadGame.class);
+                LoadGame loadGame = GSON.fromJson(message, LoadGame.class);
                 gameClient.setCurrentGame(loadGame.getGame());
                 gameClient.printGame();
             }
@@ -67,13 +67,13 @@ public class WebsocketCommunicator extends Endpoint {
     }
 
     public void sendCommand(UserGameCommand command) {
-        String json = gson.toJson(command);
+        String json = GSON.toJson(command);
         this.session.getAsyncRemote().sendText(json);
     }
 
     public void close() {
         try {
-            if (session != null && session.isOpen()) session.close();
+            if (session != null && session.isOpen()) {session.close();}
         } catch (IOException e) {
             System.err.println("Error closing WebSocket: " + e.getMessage());
         }

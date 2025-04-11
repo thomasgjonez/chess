@@ -35,11 +35,11 @@ public class WebSocketService extends BaseService {
     public void connect(Session session, ConnectCommand command) throws IOException, DataAccessException {
         // Validate token
         String username = validateAuth(command.getAuthToken(), session);
-        if (username == null) return;
+        if (username == null) {return;}
 
         //Get game from DAO
         GameData game = fetchGame(command.getGameID(), session);
-        if (game == null) return;
+        if (game == null) {return;}
 
         // Track session
         gameSessions.computeIfAbsent(command.getGameID(), k -> new ArrayList<>()).add(session);
@@ -61,15 +61,14 @@ public class WebSocketService extends BaseService {
     public void makeMove(Session session, MakeMoveCommand command) throws IOException {
         try {
             String username = validateAuth(command.getAuthToken(), session);
-            if (username == null) return;
+            if (username == null) {return;}
 
             GameData game = fetchGame(command.getGameID(), session);
-            if (game == null) return;
+            if (game == null) {return;}
 
             ChessGame chessGame = game.game();
 
             if (chessGame.isGameOver()) {
-                //System.out.println("chess game is over");
                 send(session, new Error("Error: Game is already over"));
                 return;
             }
@@ -91,7 +90,6 @@ public class WebSocketService extends BaseService {
 
             ChessMove move = command.getMove();
             chessGame.makeMove(move);
-            //System.out.println("After move: " + chessGame);
 
             ChessGame.TeamColor opponent = chessGame.getTeamTurn();
 
@@ -108,10 +106,6 @@ public class WebSocketService extends BaseService {
             } else {
                 notificationMessage = username + " made a move.";
             }
-//            System.out.println("After move (before DB save):");
-//            System.out.println("Turn: " + chessGame.getTeamTurn());
-//            System.out.println("Game over? " + chessGame.isGameOver());
-//            System.out.println(chessGame);
             GameDAO.updateGame(new GameData(
                     game.gameID(),
                     game.whiteUsername(),
@@ -119,12 +113,6 @@ public class WebSocketService extends BaseService {
                     game.gameName(),
                     chessGame
             ));
-
-//            GameData justSaved = GameDAO.getGame(game.gameID());
-//            System.out.println("After fetching back from DB:");
-//            System.out.println("Turn: " + justSaved.game().getTeamTurn());
-//            System.out.println("Game over? " + justSaved.game().isGameOver());
-//            System.out.println(justSaved.game());
 
             broadcast(command.getGameID(), new LoadGame(chessGame), null);
             broadcast(command.getGameID(), new Notification(notificationMessage), session);
@@ -140,10 +128,10 @@ public class WebSocketService extends BaseService {
     public void resign(Session session, ResignCommand command) throws IOException {
         try {
             String username = validateAuth(command.getAuthToken(), session);
-            if (username == null) return;
+            if (username == null) {return;}
 
             GameData game = fetchGame(command.getGameID(), session);
-            if (game == null) return;
+            if (game == null) {return;}
 
             ChessGame chessGame = game.game();
 
@@ -182,10 +170,10 @@ public class WebSocketService extends BaseService {
     public void leave(Session session, LeaveCommand command) throws IOException {
         try{
             String username = validateAuth(command.getAuthToken(), session);
-            if (username == null) return;
+            if (username == null) {return;}
 
             GameData game = fetchGame(command.getGameID(), session);
-            if (game == null) return;
+            if (game == null) {return;}
 
             String newWhite = username.equals(game.whiteUsername()) ? null : game.whiteUsername();
             String newBlack = username.equals(game.blackUsername()) ? null : game.blackUsername();
