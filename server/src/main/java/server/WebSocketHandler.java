@@ -37,7 +37,7 @@ public class WebSocketHandler extends BaseHandler{
                 }
                 case LEAVE -> {
                     LeaveCommand cmd = fromJson(message, LeaveCommand.class);
-                    //wsService.leave(session, cmd);
+                    wsService.leave(session, cmd);
                     System.out.println("LEAVE called");
                 }
                 case RESIGN -> {

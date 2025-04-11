@@ -12,6 +12,7 @@ import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.commands.ConnectCommand;
+import websocket.commands.LeaveCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.ResignCommand;
 import websocket.messages.LoadGame;
@@ -198,6 +199,43 @@ public class WebSocketService extends BaseService {
         } catch (DataAccessException e) {
             send(session, new Error("Error: Database failure"));
         }
+    }
+
+    public void leave(Session session, LeaveCommand command) throws IOException {
+        try{
+            if (!AuthDAO.isValidAuth(command.getAuthToken())) {
+                send(session, new Error("Error: Invalid auth token"));
+                return;
+            }
+
+            String username = AuthDAO.getUsername(command.getAuthToken());
+
+            GameData game = GameDAO.getGame(command.getGameID());
+            if (game == null) {
+                send(session, new Error("Error: Game not found"));
+                return;
+            }
+
+            String newWhite = username.equals(game.whiteUsername()) ? null : game.whiteUsername();
+            String newBlack = username.equals(game.blackUsername()) ? null : game.blackUsername();
+
+            GameData updated = new GameData(
+                    game.gameID(),
+                    newWhite,
+                    newBlack,
+                    game.gameName(),
+                    game.game()
+            );
+            GameDAO.updateGame(updated);
+
+            Notification left = new Notification(username + " left the game.");
+            broadcast(command.getGameID(), left, session);
+
+            session.close();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 
