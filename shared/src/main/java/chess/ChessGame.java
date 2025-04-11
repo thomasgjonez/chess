@@ -115,8 +115,8 @@ public class ChessGame {
             }
         }
 
-        if (piece.getPieceType() != null && piece.getPieceType() != ChessPiece.PieceType.PAWN){
-            throw new InvalidMoveException("Provided a promotion piece, but your piece cannot be promoted");
+        if (move.getPromotionPiece() != null && piece.getPieceType() != ChessPiece.PieceType.PAWN) {
+            throw new InvalidMoveException("Only pawns can be promoted.");
         }
 
         Collection<ChessMove> validMoves = validMoves(start);
