@@ -99,7 +99,29 @@ public class ChessGame {
             throw new InvalidMoveException("No piece in that start position or its not your turn.");
         }
 
+        if (piece.getPieceType() ==  ChessPiece.PieceType.PAWN) {
+            int endRow = move.getEndPosition().getRow();
+            boolean isPromotionRank = (endRow == 1 || endRow == 8);
+            boolean providedPromotion = move.getPromotionPiece() != null;
+
+            // If a promotion piece is provided, but this move doesn't reach promotion row
+            if (providedPromotion && !isPromotionRank) {
+                throw new InvalidMoveException("You provided a promotion piece, but your move does not warrant one.");
+            }
+
+            // If a pawn reaches the promotion row but no piece is given
+            if (!providedPromotion && isPromotionRank) {
+                throw new InvalidMoveException("Your pawn reached the promotion row but you didn't specify a promotion piece.");
+            }
+        }
+
+        if (piece.getPieceType() != null && piece.getPieceType() != ChessPiece.PieceType.PAWN){
+            throw new InvalidMoveException("Provided a promotion piece, but your piece cannot be promoted");
+        }
+
         Collection<ChessMove> validMoves = validMoves(start);
+
+
         if (validMoves == null || !validMoves.contains(move)) {
             throw new InvalidMoveException("You can't move there :/");
         }
