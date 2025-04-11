@@ -44,7 +44,7 @@ public class PostLoginRepl {
                     String playerColor = parts.length > 2 ? parts[2].trim().toUpperCase() : "OBSERVER";
 
                     GameRepl gameRepl = new GameRepl(serverUrl, playerColor, authData, game.gameID());
-                    System.out.println(game.gameID());
+                    //System.out.println(game.gameID());
                     boolean returnedToPost = gameRepl.run();
 
                     if (returnedToPost) {

@@ -1,19 +1,15 @@
 package clients;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPosition;
+import chess.*;
 import model.AuthData;
 import ui.EscapeSequences;
 import ui.ConsoleBoard;
 import websocket.WebsocketCommunicator;
 import websocket.commands.*;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
+import static ui.EscapeSequences.*;
 
 public class GameClient {
     private final String playerColor;
@@ -60,23 +56,44 @@ public class GameClient {
     }
 
     private String resign() {
-        socket.sendCommand(new ResignCommand(authToken, gameID));
-        return "You resigned the game.\n";
+        System.out.println(SET_TEXT_BOLD +
+                "Are you sure you want to Resign?" +
+                SET_TEXT_COLOR_BLUE + " (YES/NO)" +
+                RESET_TEXT_COLOR + RESET_TEXT_BOLD_FAINT);
+        Scanner scanner = new Scanner(System.in);
+        String line = scanner.nextLine();
+        var tokens = line.toLowerCase().split(" ");
+        var cmd = (tokens.length > 0) ? tokens[0] : "help";
+
+        if (cmd.equalsIgnoreCase("yes")) {
+            socket.sendCommand(new ResignCommand(authToken, gameID));
+            return "You resigned the game.\n";
+        }
+        return "";
     }
+
 
     private String move(String[] params) {
         if (playerColor.equalsIgnoreCase("OBSERVER")){
             return "Forbidden: Observers cannot make moves\n";
         }
-        if (params.length != 2) {
-            return "Usage: move <PIECEPOS> <TARGETPOS> (e.g. move e2 e4)\n";
+        if (params.length < 2 || params.length > 3 ) {
+            return "Usage: move <PIECEPOS> <TARGETPOS> <PROMOTION PIECE>(e.g. move e2 e4)\n";
         }
 
         try {
             ChessPosition start = parsePosition(params[0]);
             ChessPosition end = parsePosition(params[1]);
-            ChessMove move = new ChessMove(start, end, null);
-            //need to specify promotion piece eventually
+            ChessPiece.PieceType promoPiece = null;
+
+            if (params.length == 3 && params[2] != null && !params[2].isBlank()) {
+                promoPiece = convertPieceFromString(params[2].trim());
+                if (promoPiece == null) {
+                    return "Invalid promotion piece. Must be one of: queen, rook, bishop, knight\n";
+                }
+            }
+
+            ChessMove move = new ChessMove(start, end, promoPiece);
             socket.sendCommand(new MakeMoveCommand(authToken, gameID, move));
 
             return "Move submitted: " + params[0] + " to " + params[1]+ "\n";
@@ -137,8 +154,8 @@ public class GameClient {
                 " - highlights the legal moves a specific piece\n" +
 
                 "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Move" + EscapeSequences.SET_TEXT_COLOR_BLUE +
-                " <PIECEPOS> <TARGETPOS>" + EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.RESET_TEXT_BOLD_FAINT +
-                " - make a move from piece position to target position\n" +
+                " <PIECEPOS> <TARGETPOS> <PROMOTIONPIECE>" + EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.RESET_TEXT_BOLD_FAINT +
+                " - make a move from piece position to target position and specify which promotion piece if applicable\n" +
 
                 "- " + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_GREEN + "Resign" + EscapeSequences.RESET_TEXT_COLOR +
                 EscapeSequences.RESET_TEXT_BOLD_FAINT +
@@ -160,6 +177,16 @@ public class GameClient {
         int col = pos.charAt(0) - 'a' + 1;
         int row = Integer.parseInt(pos.substring(1));
         return new ChessPosition(row, col);
+    }
+
+    private ChessPiece.PieceType convertPieceFromString(String piece){
+        return switch (piece.toLowerCase()) {
+            case "queen" -> ChessPiece.PieceType.QUEEN;
+            case "bishop" -> ChessPiece.PieceType.BISHOP;
+            case "knight" -> ChessPiece.PieceType.KNIGHT;
+            case "rook" -> ChessPiece.PieceType.ROOK;
+            default -> null;
+        };
     }
 
 }

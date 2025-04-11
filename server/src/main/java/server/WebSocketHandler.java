@@ -20,7 +20,6 @@ public class WebSocketHandler extends BaseHandler{
         System.out.println("Received WebSocket message: " + message);
 
         try {
-            //debugging purposes
             UserGameCommand base = fromJson(message, UserGameCommand.class);
 
             switch (base.getCommandType()) {

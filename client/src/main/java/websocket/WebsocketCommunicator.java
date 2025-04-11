@@ -27,7 +27,7 @@ public class WebsocketCommunicator extends Endpoint {
         try {
 
             //URI uri = new URI("ws://" + serverDomain + "/ws");
-            System.out.println(serverDomain);
+            //System.out.println(serverDomain);
             URI uri = new URI("ws://localhost:8080/ws");//temp for debugging
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
