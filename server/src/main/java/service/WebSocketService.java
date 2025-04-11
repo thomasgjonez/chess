@@ -34,17 +34,12 @@ public class WebSocketService extends BaseService {
 
     public void connect(Session session, ConnectCommand command) throws IOException, DataAccessException {
         // Validate token
-        if (!AuthDAO.isValidAuth(command.getAuthToken())) {
-            send(session, new Error("Error: Invalid auth token"));
-            return;
-        }
+        String username = validateAuth(command.getAuthToken(), session);
+        if (username == null) return;
 
         //Get game from DAO
-        GameData game = GameDAO.getGame(command.getGameID());
-        if (game == null) {
-            send(session, new Error("Error: Game not found"));
-            return;
-        }
+        GameData game = fetchGame(command.getGameID(), session);
+        if (game == null) return;
 
         // Track session
         gameSessions.computeIfAbsent(command.getGameID(), k -> new ArrayList<>()).add(session);
@@ -55,7 +50,6 @@ public class WebSocketService extends BaseService {
         send(session, new LoadGame(chessGame));
 
         // Notify others
-        String username = AuthDAO.getUsername(command.getAuthToken());
         String msg = username + " joined game ";
         broadcast(command.getGameID(), new Notification(msg), session);
 
@@ -66,18 +60,11 @@ public class WebSocketService extends BaseService {
 
     public void makeMove(Session session, MakeMoveCommand command) throws IOException {
         try {
-            if (!AuthDAO.isValidAuth(command.getAuthToken())) {
-                send(session, new Error("Error: Invalid auth token"));
-                return;
-            }
+            String username = validateAuth(command.getAuthToken(), session);
+            if (username == null) return;
 
-            String username = AuthDAO.getUsername(command.getAuthToken());
-            GameData game = GameDAO.getGame(command.getGameID());
-
-            if (game == null) {
-                send(session, new Error("Error: Game not found"));
-                return;
-            }
+            GameData game = fetchGame(command.getGameID(), session);
+            if (game == null) return;
 
             ChessGame chessGame = game.game();
 
@@ -152,20 +139,11 @@ public class WebSocketService extends BaseService {
 
     public void resign(Session session, ResignCommand command) throws IOException {
         try {
-            // Validate auth
-            if (!AuthDAO.isValidAuth(command.getAuthToken())) {
-                send(session, new Error("Error: Invalid auth token"));
-                return;
-            }
+            String username = validateAuth(command.getAuthToken(), session);
+            if (username == null) return;
 
-            String username = AuthDAO.getUsername(command.getAuthToken());
-
-            //  Get game
-            GameData game = GameDAO.getGame(command.getGameID());
-            if (game == null) {
-                send(session, new Error("Error: Game not found"));
-                return;
-            }
+            GameData game = fetchGame(command.getGameID(), session);
+            if (game == null) return;
 
             ChessGame chessGame = game.game();
 
@@ -203,18 +181,11 @@ public class WebSocketService extends BaseService {
 
     public void leave(Session session, LeaveCommand command) throws IOException {
         try{
-            if (!AuthDAO.isValidAuth(command.getAuthToken())) {
-                send(session, new Error("Error: Invalid auth token"));
-                return;
-            }
+            String username = validateAuth(command.getAuthToken(), session);
+            if (username == null) return;
 
-            String username = AuthDAO.getUsername(command.getAuthToken());
-
-            GameData game = GameDAO.getGame(command.getGameID());
-            if (game == null) {
-                send(session, new Error("Error: Game not found"));
-                return;
-            }
+            GameData game = fetchGame(command.getGameID(), session);
+            if (game == null) return;
 
             String newWhite = username.equals(game.whiteUsername()) ? null : game.whiteUsername();
             String newBlack = username.equals(game.blackUsername()) ? null : game.blackUsername();
@@ -256,5 +227,20 @@ public class WebSocketService extends BaseService {
                 }
             }
         }
+    }
+    private String validateAuth(String authToken, Session session) throws IOException, DataAccessException {
+        if (!AuthDAO.isValidAuth(authToken)) {
+            send(session, new Error("Error: Invalid auth token"));
+            return null;
+        }
+        return AuthDAO.getUsername(authToken);
+    }
+
+    private GameData fetchGame(int gameID, Session session) throws IOException, DataAccessException {
+        GameData game = GameDAO.getGame(gameID);
+        if (game == null) {
+            send(session, new Error("Error: Game not found"));
+        }
+        return game;
     }
 }
